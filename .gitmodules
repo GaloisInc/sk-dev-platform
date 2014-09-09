@@ -1,0 +1,9 @@
+[submodule "user/libsk/lwip-tap"]
+	path = user/libsk/lwip-tap
+	url = git://github.com/takayuki/lwip-tap.git
+[submodule "user/libsk/lwip-contrib"]
+	path = user/libsk/lwip-contrib
+	url = git://git.savannah.nongnu.org/lwip/lwip-contrib.git
+[submodule "user/libsk/lwip"]
+	path = user/libsk/lwip
+	url = git://git.savannah.nongnu.org/lwip.git

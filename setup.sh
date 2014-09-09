@@ -90,6 +90,11 @@ function update-repos {
     update-repo ${SCHEDTOOL_REPO} ${SCHEDTOOL_BRANCH} ${SCHEDTOOL_DIR}
 }
 
+function update-submodules {
+    git submodule init
+    git submodule update
+}
+
 function unpack-buildroot {
     if [ ! -d ${BUILDROOT_DIR} ]
     then
@@ -201,6 +206,7 @@ mkdir -p $BUILD
 
 (install_distro_packages || echo "Could not install distribution packages without sudo privileges")
 update-repos
+update-submodules
 unpack-buildroot
 unpack-refpolicy
 install-configs

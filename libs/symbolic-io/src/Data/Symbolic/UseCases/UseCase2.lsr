@@ -1,0 +1,58 @@
+//------------------------------------------------------------------------------
+// To compile this program (in this directory)
+//      lobster -I Prelude.lsr UseCase2.lsr
+//
+// or
+//      make UseCase2.fc
+//
+//------------------------------------------------------------------------------
+
+class Top ( infName, outfName ) {
+  type Ain;
+  type Aout;
+  type Bin;
+  type Bout;
+  type Topin;
+  type Topout;
+  port in;
+  port out;
+
+  class Inner ( infName, outfName ) {
+    // Do we need a process in here?
+    type X;
+    type Y;
+    port in  : { position = object };
+    port out : { position = object };
+    domain p = Process();
+    domain inf  = SimpleFile ( X, infName );
+    domain outf = SimpleFile ( Y, outfName );
+    in        -- inf.read;
+    inf.write -- p.active;
+    p.active  --> outf.write;
+    outf.read --> out;
+  }
+
+  // Top has its own input and output files
+
+  domain inf  = SimpleFile ( Topin, infName );   // Input file of top
+  domain outf = SimpleFile ( Topout, outfName ); // Output file of top
+  in        --> inf.write;
+  inf.read  --> p.active;
+  outf.read --> out;
+  p.active  --> outf.write;
+
+  // Top will create process A, with input file a.in, and output file a.out
+  domain a   = Inner ( "a.in", "a.out" );
+  // Top will write to a.in and read from a.out
+  p.active  --  a.in;
+  a.out     --> p.active;
+
+  // Top will create process B, with input file b.in, and output file b.out
+  domain b    = Inner ( "b.in", "b.out" );
+  // Top will write to b.in and read from b.out
+  p.active --  b.in;
+  b.out    --> p.active;
+  domain p = Process();
+}
+
+domain app = Top ( "rf", "wf" );

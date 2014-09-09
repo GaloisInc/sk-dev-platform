@@ -1,0 +1,33 @@
+INPUT: ex09.lsr
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class Process() {
+  port active : { position = subject };
+}
+
+domain proc = Process();
+domain file = File("blah.txt");
+proc.active -- file.getattr;
+
+class Foo() {
+  domain p = Process();
+  domain f = File("myfile.txt");
+  p.active -- f.getattr;
+}
+
+domain foo = Foo();
+OUTPUT: ex09.lsr
+module.te: ex09.lsr
+policy_module(module,1.0)
+type foo_p_t;
+type foo_f_t;
+type file_t;
+type proc_t;
+allow proc_t file_t:file getattr;
+allow foo_p_t foo_f_t:file getattr;
+module.fc: ex09.lsr
+file_t "blah.txt"
+foo_f_t "myfile.txt"
+

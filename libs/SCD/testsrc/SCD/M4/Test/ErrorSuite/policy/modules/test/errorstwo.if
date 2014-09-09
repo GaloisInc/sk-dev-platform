@@ -1,0 +1,9 @@
+## <summary>Dummy interface</summary>
+
+########################################
+## <summary>
+##	Placeholder interface.
+## </summary>
+#
+interface(`placeholder_interface',`
+')

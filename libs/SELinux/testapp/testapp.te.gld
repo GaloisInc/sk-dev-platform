@@ -1,0 +1,22 @@
+policy_module(../SELinux/testapp/testapp,1.0)
+type init_t;
+type syslog_t;
+type testapp_consumer_process_t;
+type testapp_producer_process_t;
+type testapp_controller_process_t;
+type testapp_items_file_t;
+type testapp_executable_t;
+allow init_t testapp_controller_process_t:process transition;
+allow init_t testapp_executable_t:file execute;
+allow testapp_consumer_process_t syslog_t:syslog log;
+allow testapp_producer_process_t syslog_t:syslog log;
+allow testapp_consumer_process_t testapp_items_file_t:file getattr;
+allow testapp_consumer_process_t testapp_items_file_t:file read;
+allow testapp_consumer_process_t testapp_executable_t:file entrypoint;
+allow testapp_controller_process_t testapp_consumer_process_t:process transition;
+allow testapp_producer_process_t testapp_items_file_t:file getattr;
+allow testapp_producer_process_t testapp_items_file_t:file write;
+allow testapp_producer_process_t testapp_executable_t:file entrypoint;
+allow testapp_controller_process_t testapp_producer_process_t:process transition;
+allow testapp_controller_process_t testapp_executable_t:file entrypoint;
+allow testapp_controller_process_t testapp_executable_t:file execute;

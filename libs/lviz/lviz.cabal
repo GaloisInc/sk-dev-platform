@@ -1,0 +1,32 @@
+Name:                lviz
+Version:             0.1
+Description:         lobster Security Configuration DSL visualization tool
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Rogan Creswick, Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          creswick@galois.com, magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+Data-Files:          lviz.glade, help/*.html, help/*.jpg, help/*.pdf,
+                     help/*.png
+
+Executable  lviz
+  Main-is:           LVizMain.hs
+  Extensions:        CPP
+  ghc-options:       -idist/build -main-is LVizMain.main
+  Build-Depends:
+                     containers >= 0.2.0.1,
+                     base >= 4,
+                     filepath >= 1,
+                     random >= 1,
+                     array >= 0.1.0.0,
+                     mtl >= 1,
+                     cairo >= 0.10.1 && < 0.12,
+                     pango >= 0.11.2 && < 0.12,
+                     svgcairo >= 0.10.1 && < 0.12,
+                     glade >= 0.10.1 && < 0.12,
+                     gtk >= 0.11.2 && < 0.12,
+                     process >= 1,
+                     unix,
+                     directory >= 1,
+                     lobster >= 0.1

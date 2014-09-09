@@ -1,0 +1,23 @@
+policy_module(errors,1.0.0)
+
+type valid_type_t;
+
+# DuplicateSymbolDeclaration
+type duplicate_symbol_decl_t;
+type duplicate_symbol_decl_t;
+
+# DuplicateIdentifier
+
+attribute duplicate_identifier_t;
+attribute duplicate_identifier_t;
+type duplicate_identifier_t, duplicate_identifier_t;
+
+# IllegalMacroUse
+type domain_trans;
+
+# IllegalParameterUse
+type $1_trans;
+
+# UnknownIfDefId
+ifdef(`unknown_symbol', `define(`dummy_macro_name')')
+

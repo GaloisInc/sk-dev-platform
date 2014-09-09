@@ -1,0 +1,39 @@
+Using this tool:
+
+Collect a list of the types you need in a file, one per line:
+
+types.txt:
+bin_t
+bsdpty_device_t
+cardmgr_var_run_t
+cgroup_t
+checkpolicy_exec_t
+...
+
+After building your refpolicy, gather the generated base.conf and all the
+*.tmp files from the tmp/ directory which are generated from the module
+source files.
+
+The tool can run in two modes: required and optional mode:
+required: Only consider module dependencies which are required
+optional: Consider all optional module dependencies
+
+This is important because if you initially compiled your policy with all of
+the modules you'll need to consider all of the optional sections, but you are
+deciding which modules you compile from the beginning you can omit the optional
+dependencies as they will be omitted if you compile fresh omitting those modules.
+
+Execute the tool with all of these arguments.
+$ selinux-policy-pruner r types.txt base.conf *.tmp
+abrt
+acct
+ada
+aide
+aisexec
+...
+
+The tool will output the set of modules which are needed.
+
+This information can inform both which modules you load at run-time using semodule
+and it can inform which modules you enable in modules.conf when compiling a
+policy.

@@ -1,0 +1,21 @@
+Name:                shrimp
+Version:             0.1
+Description:         shrimp
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+
+Executable shrimp
+  Main-is:           Shrimp.hs
+  Extensions:        CPP
+  ghc-options:       -idist/build
+  Build-Depends:
+                     base >= 4,
+                     pretty >= 1,
+                     directory >= 1,
+                     scd >= 0.1
+
+

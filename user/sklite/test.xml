@@ -1,0 +1,16 @@
+<layout deadline="1000000"
+        runtime="700000"
+        baseDir="/demo"
+        >
+
+  <segment name="foo" size="16384" />
+  <segment name="bar" size="4096" />
+  <segment name="baz" size="4096" />
+
+  <cell name="c1" program="foo" user="eicadmin" scheduleRate="100">
+    <use-segment name="foo" alias="myFoo" privileges="rw" />
+    <use-segment name="bar" alias="myBar" privileges="ro" />
+    <use-segment name="baz" alias="myBaz" privileges="wo" />
+  </cell>
+
+</layout>

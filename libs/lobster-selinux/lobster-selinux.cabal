@@ -1,0 +1,53 @@
+Name: lobster-selinux
+Version: 0.1
+Description: The Lobster SELinux back-end
+License: AllRightsReserved
+License-file: LICENSE
+Cabal-version: >= 1.2
+Build-type: Simple
+Author: Joe Hurd, Brett Letner, Magnus Carlsson
+Maintainer: joe@galois.com, bletner@contractor.galois.com, magnus@galois.com
+
+Library {
+  Build-depends:
+    array >= 0.1.0.0,
+--    base >= 2.1.1,
+    base >= 4,
+    containers >= 0.1.0.0,
+    filepath >= 1.1,
+    fgl >= 5,
+    lobster >= 0.1,
+    mtl >= 2.0,
+    pretty >= 1.1,
+    process >= 1.1,
+    directory >= 1.1,
+    regex-compat >= 0.71.0.1,
+    regex-posix >= 0.71,
+    scd >= 0.1
+
+  Exposed-modules:
+-- Lobster abstract syntax, parsing, and compilation into native policy
+    Lobster.SELinux.SELinux
+-- Testing
+    Lobster.SELinux.Test.SELinux
+
+-- This is a sledgehammer: not all modules use CPP, but this appears to be
+-- necessary to get any module CPP:ed before shipping it to haddock.
+  extensions: CPP, Generics
+  hs-source-dirs: src
+  ghc-options: -Wall
+}
+
+Executable lobster-selinux {
+  extensions: CPP
+  hs-source-dirs: src
+  Main-is: Lobster/SELinux/Main.hs
+  ghc-options: -idist/build
+}
+
+Executable lobster-selinux-test {
+  extensions: CPP
+  hs-source-dirs: src
+  Main-is: Lobster/SELinux/Test/Main.hs
+  ghc-options: -idist/build
+}

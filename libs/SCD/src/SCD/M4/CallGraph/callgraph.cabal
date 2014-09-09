@@ -1,0 +1,16 @@
+Name:                scd-m4-callgraph
+Version:             0.1
+Description:         scd-m4-callgraph
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+
+Executable   scd-m4-callgraph {
+extensions: CPP
+Main-is:             CallGraph.hs
+ghc-options:         -idist/build
+Build-Depends:       scd,base >= 2.1.1, containers >= 0.2.0.1
+}

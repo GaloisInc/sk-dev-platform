@@ -1,0 +1,30 @@
+Policy . Policy ::= "policy" Identifier Version [Stmt] ;
+
+Version . Version ::= Integer "." Integer ";" ;
+
+Class . Stmt ::= "class" TypeIdentifier "(" [Identifier] ")" "{" [Stmt] "}" ;
+Port . Stmt ::= "port" PositionValue Identifier ";" ;
+Assign . Stmt ::= Identifier "=" Expr ";" ;
+Domain . Stmt ::= Identifier "<-" "domain" TypeIdentifier "(" [Expr] ")" ";" ;
+Adapter . Stmt ::= QualIdent ":-:" QualIdent ";" ;
+Coupler . Stmt ::= Identifier ":=:" QualIdent ";" ;
+
+-- QualNameE . Expr ::= QualName ;
+Num . Expr ::= Integer ;
+Str . Expr ::= String ;
+
+Qual . QualIdent ::= Identifier "." Identifier ;
+
+Subject . PositionValue ::= "subject" ;
+Object . PositionValue ::= "object" ;
+Unknown . PositionValue ::= "*" ;
+
+separator Identifier "," ;
+separator Expr "," ;
+separator Stmt "" ;
+
+token Identifier (lower (letter | digit | '_')*) ;
+token TypeIdentifier (upper (letter | digit | '_')*) ;
+
+comment "//" ;
+comment "/*" "*/" ;

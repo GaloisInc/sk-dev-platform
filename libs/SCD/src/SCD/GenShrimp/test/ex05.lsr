@@ -1,0 +1,17 @@
+class Subj() {
+  port p : {
+    position = subject 
+  } ;
+  }
+class Obj() {
+  port q : {
+    position = object 
+  } ;
+  domain x = Subj() ; // this line seems to cause problems
+/* when the line is removed, both lobster and sl2cs produce the same output.
+ when the line is left in lobster doesn't generate any allow statements, but sl2cs does.
+*/
+  }
+domain s = Subj() ;
+domain o = Obj() ;
+s . p -- o . q ;

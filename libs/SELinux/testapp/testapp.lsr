@@ -1,0 +1,140 @@
+// Base policy
+
+// A primitive class:
+class Process() {
+  port active : {position = subject};
+  port fork : {position = object};
+  port transition : {position = object};
+}
+
+// Classes can take arguments:
+class File(filenameRegex) {
+  port getattr : {position = object};
+  port read : {position = object};
+  port write : {position = object};
+  port execute : {position = object};
+  port entrypoint : {position = object};
+}
+
+// A wrapper for the primitive File class:
+class SimpleFile(contents, filenameRegex) {
+  // Embedding an instance of a class within another
+  domain file = File(filenameRegex);
+
+  // Ports can be declared and then connected
+  port read : {type = contents};
+  read <-- file.getattr;
+  read <-- file.read;
+
+  // Or the operations can be combined
+  port write : {type = contents} --> file.getattr, file.write;
+
+  // The direction of arrows impose a constraint on the information flow:
+  // -- is a neutral connection with no constraint
+  // --> requires there to be more left-to-right flow than right-to-left
+  // <-- requires there to be more right-to-left flow than left-to-right
+  // <--> requires there to be equal left-to-right and right-to-left flows
+}
+
+// Init class
+
+class Init() {
+  port creator;
+}
+
+// Creating a global instance of the Init class
+domain init = Init();
+
+// Syslog class
+
+class Syslog() {
+  class Log() {}
+  port log : {type = Log, position = object};
+}
+
+domain syslog = Syslog();
+
+// User application class
+
+class TestApp(itemsFilenameRegexp) {
+  class Items() {}
+
+  class Controller() {
+    domain process = Process();
+
+    port executable --> process.active;
+
+    port create -- process.transition;
+
+    port creator -- process.active;
+  }
+
+  class Producer() {
+    domain process = Process();
+
+    port production : {type = Items} <-- process.active;
+
+    port log <-- process.active;
+
+    port executable --> process.active;
+
+    port create -- process.transition;
+  }
+
+  class Consumer() {
+    domain process = Process();
+
+    port consumption : {type = Items} --> process.active;
+
+    port log <-- process.active;
+
+    port executable --> process.active;
+
+    port create -- process.transition;
+  }
+
+  port log : {type = Syslog.Log};
+
+  port create;
+
+  domain executable = File("/usr/local/bin/testapp");
+
+  domain items = SimpleFile(Items, itemsFilenameRegexp);
+
+  domain controller = Controller();
+  controller.executable <-- executable.entrypoint;
+
+  domain producer = Producer();
+  producer.executable <-- executable.entrypoint;
+  producer.production --> items.write;
+  producer.log --> log;
+
+  domain consumer = Consumer();
+  consumer.executable <-- executable.entrypoint;
+  consumer.consumption <-- items.read;
+  consumer.log --> log;
+
+  create -- executable.execute;
+  create -- controller.create;
+  controller.creator -- executable.execute;
+  controller.creator -- producer.create;
+  controller.creator -- consumer.create;
+}
+
+// The lobster needs to notice that two or more different processes are
+// using the same executable (namely the master, the producer, and the
+// consumer), so that permission to use set_exec_context() will
+// be needed, at least by the master.
+
+// Use of the console should show up somehow in the Lobster specification.
+
+// A "domain" at the top level generates an SELinux module, by
+// executing the class code. The file context file (testapp.fc) comes
+// from the File classes created, the interface file (testapp.if)
+// comes from the ports in testapp, and the type enforcement file
+// (testapp.te) comes from the executed connection statements.
+domain testapp = TestApp("/tmp/testapp.*");
+
+// Top level connections connect SELinux modules
+init.creator -- testapp.create;
+testapp.log --> syslog.log;

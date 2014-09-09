@@ -1,0 +1,15 @@
+Strategy for generating test data:
+Top Level:
+  - almost always:
+    2 or more classes
+    2 or more new stmts
+    1 or more connections
+  - no ports
+
+Inside a class:
+  - almost always:
+    1 or more ports
+  - harder to make a sub-class as you go deeper, e.g. depth of 4 should be plenty
+
+Overall:
+  - rarely choose a string,int, or name expression

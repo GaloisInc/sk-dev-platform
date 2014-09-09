@@ -1,0 +1,36 @@
+class Subject() {
+  port subj : { position = subject };
+}
+
+class Subject2() {
+  port subj2 : { position = subject };
+}
+
+class Object() {
+  port obj : { position = object };
+}
+
+class Object2() {
+  port obj2 : { position = object };
+}
+
+class Foo() {
+  port p;
+  domain a = Subject();
+  domain b = Subject2();
+  p -- a.subj;
+  p -- b.subj2;
+}
+
+class Bar() {
+  port q;
+  domain c = Object();
+  domain d = Object2();
+  q -- c.obj;
+  q -- d.obj2;
+}
+
+domain e = Foo();
+domain f = Bar();
+
+e.p -- f.q;

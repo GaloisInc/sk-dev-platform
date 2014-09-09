@@ -1,0 +1,73 @@
+Policy . Policy ::= [TLDecl] [Stmt] ;
+
+PolicyName . TLDecl ::= "policy" Identifier ";" ;
+Version . TLDecl ::= "version" Integer "." Integer ";" ;
+
+Class . Stmt ::= "class" TypeIdentifier "(" [Identifier] ")" "{" [Stmt] "}" ;
+TypeS . Stmt ::= "type" TypeIdentifier ";" ;
+Port . Stmt ::= "port" Identifier MPortDeclarationType MPortDeclarationConnection ";" ;
+Assign . Stmt ::= Identifier "=" Expr ";" ;
+Connection . Stmt ::= [QualName] Connection [QualName] ";" ;
+Domain . Stmt ::= "domain" Identifier "=" TypeIdentifier "(" [Expr] ")" ";" ;
+
+QualNameE . Expr ::= QualName ;
+Num . Expr ::= Integer ;
+Str . Expr ::= String ;
+-- Expr  . Expr ::= "(" Expr ")" ;
+
+-- IdentP . Parameter ::= Identifier ;
+
+TypePTC . PortTypeConstraint ::= "type" "=" TypeValue ;
+Input . PortTypeConstraint ::= "input" "=" IntegerValue ;
+Output . PortTypeConstraint ::= "output" "=" IntegerValue ;
+Position . PortTypeConstraint ::= "position" "=" PositionValue ;
+Direction . PortTypeConstraint ::= "direction" "=" DirectionValue ;
+
+QualNameTV . TypeValue ::= QualName ;
+PolyTV . TypeValue ::= "*" ;
+
+Subject . PositionValue ::= "subject" ;
+Object . PositionValue ::= "object" ;
+PolyPV . PositionValue ::= "*" ;
+IdentPV . PositionValue ::= Identifier ;
+
+InputDV . DirectionValue ::= "input" ;
+OutputDV . DirectionValue ::= "output" ;
+BidirectionalDV . DirectionValue ::= "bidirectional" ;
+PolyDV . DirectionValue ::= "*" ;
+IdentDV . DirectionValue ::= Identifier ;
+
+PolyIV . IntegerValue ::= "*" ;
+IntIV . IntegerValue ::= Integer ;
+IdentIV . IntegerValue ::= Identifier ;
+
+BidirectionalC . Connection ::= "<-->" ;
+LeftToRight . Connection ::= "-->" ;
+RightToLeft . Connection ::= "<--" ;
+Neutral . Connection ::= "--" ;
+
+UnQual . QualName ::= Name ;
+Qual . QualName ::= Name "." Name ;
+
+TypeIdent . Name ::= TypeIdentifier ;
+Ident . Name ::= Identifier ;
+
+EmptyPDT . MPortDeclarationType ::= ;
+FullPDT . MPortDeclarationType ::= ":" "{" [PortTypeConstraint] "}" ;
+
+EmptyPDC . MPortDeclarationConnection ::= ;
+FullPDC . MPortDeclarationConnection ::= Connection [QualName] ;
+
+-- separator Parameter "," ;
+separator Identifier "," ;
+separator Expr "," ;
+separator QualName "," ;
+separator Stmt "" ;
+separator TLDecl "" ;
+separator PortTypeConstraint "," ;
+
+token Identifier (lower (letter | digit | '_')*) ;
+token TypeIdentifier (upper (letter | digit | '_')*) ;
+
+comment "//" ;
+comment "/*" "*/" ;

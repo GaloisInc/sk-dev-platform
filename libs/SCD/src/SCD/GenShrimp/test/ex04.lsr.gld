@@ -1,0 +1,8 @@
+INPUT: ex04.lsr
+type Foo;
+
+OUTPUT: ex04.lsr
+module.te: ex04.lsr
+policy_module(module,1.0)
+module.fc: ex04.lsr
+

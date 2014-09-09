@@ -1,0 +1,28 @@
+INPUT: err07.lsr
+class Poly() {
+  port p;
+}
+
+class Foo() {
+  port q : { position = subject } ;
+  domain a = Poly();
+  q -- a.p;
+}
+
+class Bar() {
+  port r : { position = object } ;
+  domain b = Poly();
+  r -- b.p;
+}
+
+domain c = Foo();
+domain d = Bar();
+c.q -- d.r;
+OUTPUT: err07.lsr
+lobster: ERROR: couldn't generate native SELinux from the Lobster policy file:
+couldn't establish subject/object
+module.te: err07.lsr
+
+module.fc: err07.lsr
+cat: module.fc: No such file or directory
+

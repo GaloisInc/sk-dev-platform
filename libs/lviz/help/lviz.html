@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>Lobster Visualization</title>
+</head>
+<body>
+<h1 style="font-weight: normal;"><span style="font-weight: bold;">LViz</span>
+- <span style="font-weight: bold;">L</span>obster <span
+ style="font-weight: bold;">Vi</span>suali<span
+ style="font-weight: bold;">z</span>ation</h1>
+<address><span style="font-weight: bold;">Navigation</span>: <a
+ href="overview.html">Home</a> &gt; LViz<br>
+</address>
+<h2>Overview</h2>
+Lobster DSL (Domain Specific Language) is a high level policy
+specification language which provides methods of abstracting,
+understanding, and analyzing security policies.&nbsp; LViz provides a
+method of visualizing the policy in a way that improves understanding.<br>
+<h2>Invoking LViz</h2>
+LViz can be started through the lobster command line via the command:<br>
+<pre style="color: rgb(255, 0, 0);">lviz [optional lobster file]</pre>
+If the optional file is used, it will be loaded at startup. If not
+provided, a file can be loaded through the "file/open" menu item. <br>
+Once lviz is invoked, it provides a normal GUI interface with menu
+options.&nbsp; Menu choices are listed below.<br>
+<br>
+The initial version of lviz is a viewing only tool.&nbsp; Later version
+may be exampled to allow editing and to simplify Lobster policy
+creation.<br>
+<h2>Menus</h2>
+* items are not currently active<br>
+<table style="text-align: left; width: 720px; height: 516px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;">Menu<br>
+      </td>
+      <td style="vertical-align: top; font-weight: bold;">Item<br>
+      </td>
+      <td style="vertical-align: top; font-weight: bold;">Function<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">File<br>
+      </td>
+      <td style="vertical-align: top;">Open<br>
+      </td>
+      <td style="vertical-align: top;">open lobster file (*.lsr)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">File<br>
+      </td>
+      <td style="vertical-align: top;">Close </td>
+      <td style="vertical-align: top;">close open lobster file, but
+keep
+program active</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">File<br>
+      </td>
+      <td style="vertical-align: top;">Quit<br>
+      </td>
+      <td style="vertical-align: top;">Quit Lviz graphics<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Edit<br>
+      </td>
+      <td style="vertical-align: top;">Colors<br>
+      </td>
+      <td style="vertical-align: top;">Ability to set colors for
+domains based on hierarchy<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">Lens<br>
+      </td>
+      <td style="vertical-align: top;">Stretch/Standard viewing
+modes.&nbsp; In stretch viewing, the center of the view is expanded
+while the rest of the drawing is reduced in size.&nbsp; cursor keys can
+be used to move around the screen<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">Expand All<br>
+      </td>
+      <td style="vertical-align: top;">Expand display of all
+sub-domains to make the entire file visible<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">Collapse All<br>
+      </td>
+      <td style="vertical-align: top;">Only show top level domains<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">Wrap<br>
+      </td>
+      <td style="vertical-align: top;">Mode, when set, the Wrap layout
+algorithm places domains different which may improve layout for some
+types of policies<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">No Overlap<br>
+      </td>
+      <td style="vertical-align: top;">Mode - when No Overlap is set,
+it adjust wires to ensure no overlap of domains<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">View<br>
+      </td>
+      <td style="vertical-align: top;">Curve Edges<br>
+      </td>
+      <td style="vertical-align: top;">Mode - when set, edits will be
+curved at the corners.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Help<br>
+      </td>
+      <td style="vertical-align: top;">Help<br>
+      </td>
+      <td style="vertical-align: top;">Display the overview HTML page<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Help<br>
+      </td>
+      <td style="vertical-align: top;">About<br>
+      </td>
+      <td style="vertical-align: top;">Display version information<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Mouse</h2>
+The mouse cursor currently does not support selection of screen
+items.&nbsp; This functionality will be added to a later version of
+lviz.&nbsp; The main existing selection mechanism is the ability to
+expand and collapse the display of domain hierarchy.&nbsp; For some
+Lobster policies, seeing only the top level can aid in understanding
+the information flow.&nbsp; To expand collapse a domain - put the
+cursor over the domain rectangle and right click the mouse. The two
+choices are expand and collapse that individual domain. This differs
+from the menu selection which affects all domains.<br>
+<br>
+Left Click - Select Item<br>
+Right Click - Expand/Collapse sub menus<br>
+<br>
+</body>
+</html>

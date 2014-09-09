@@ -1,0 +1,39 @@
+
+This directory contains a demonstration separation kernel application.
+It shows the use of the APIs for shared memory regions, disk devices,
+and communication channels.  It also includes the corresponding XML
+configuration required to generate the proper C stub code and set up
+shared memory and scheduling paramters.
+
+To build the demonstration, source 'setup.sh' in this distribution and
+then run
+
+  make cross
+
+in this directory.  The result of the build will be a filesystem
+image, 'initramfs-demo', which can be combined with the pre-built
+kernel image to boot the system.  For information on booting the
+image, see docs/programming_guide.txt.
+
+Demonstration Structure
+-----------------------
+
+These programs demonstrate a system with two disks and two clients
+which read from one disk and write to the other.  The programs are
+intended to show a separation kernel configuration with a
+uni-directional data flow and access to virtual storage devices.  The
+system is depicted below.
+
+  +----------+                                   +----------+
+  | Client 1 |---------------------------------->| Client 2 |
+  +----------+                                   +----------+
+       ^                                               |
+       |                                               |
+       |                                               v
+   +--------+                                     +--------+
+   | Disk 1 |                                     | Disk 2 |
+   +--------+                                     +--------+
+
+Disk 1 can only be accessed by Client 1.  Client 1 reads sectors from
+Disk 1, transmits them to Client 2, and Client 2 writes them do Disk
+2.

@@ -1,0 +1,22 @@
+<layout bandwidth="95">
+
+  <channel name="to_pep" from="net1" to="pep" msgsize="65528" slots="16" overwrite="yes" />
+  <channel name="from_pep" from="pep" to="net2" msgsize="65528" slots="16" overwrite="yes" />
+
+  <cell name="pep" program="pep" user="root" runtime="30000" period="100000" />
+
+  <cell name="net1" program="net1" user="root" runtime="30000" period="100000">
+    <args>
+      <!-- Server port -->
+      <arg value="127.0.0.1"/>
+      <arg value="12345"/>
+    </args>
+  </cell>
+
+  <cell name="net2" program="net2" user="root" runtime="30000" period="100000">
+    <args>
+      <arg value="127.0.0.1"/>
+      <arg value="12346"/>
+    </args>
+  </cell>
+</layout>

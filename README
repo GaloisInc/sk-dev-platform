@@ -1,0 +1,170 @@
+
+Separation Kernel Development Platform
+--------------------------------------
+
+This package contains the source code for the custom components of the
+separation kernel development platform.  This document will cover the contents
+of the package and the steps required to build the programs contained within.
+Although the sources should be buildable, this release is not a complete source
+release since it lacks the Linux kernel source, BuildRoot source, and
+configuration files.
+
+Package Contents
+----------------
+
+  Scripts:
+    setup.sh            Configure the development environment to prepare for a
+                        build.
+
+    build.sh            Build the entire system.
+
+    src-dist.sh         Used for creating mixed binary/source distributions.
+
+  Directories:
+    user/               User-space sources of the demo programs, the 'sklite'
+                        tool, and the 'libsk' C support library.
+
+    os/                 Operating system (kernel, filesystem) build process.
+
+    libs/               Haskell support libraries for the 'sklite' tool and its
+                        SElinux policy integration.
+
+  user/checksyms/
+
+    checksyms: a python tool for checking referenced symbols in a
+    program binary against a whitelist of library symbols;
+    ld[unecessary);
+
+  user/sklite/
+
+    sklite-drivers: a tool for processing separation kernel layout
+    configurations to generate C initialization code to be compiled
+    with user-supplied application code;
+
+    sklite-boot: a tool for processing separation kernel layout
+    configurations to generate a script to start applications and set
+    their scheduling and resource parameters.
+
+  user/libsk/
+
+    This includes the 'libsk' C library for communication channel,
+    disk driver, and shared memory support, as well as the
+    demonstration application source code.
+
+  user/demo/
+  user/demo-async/
+  user/demo-net-unix/
+  user/demo-net-lwip/
+
+    These directories include demo configurations showcasing various
+    device drivers and communication configurations.
+
+    In particular, the demo-net-lwip demonstration directory includes
+    source code for the Lightweight IP userspace network stack and some
+    associated extensions for Tap device support; their upstream
+    repositories can be found at
+
+      git://git.savannah.nongnu.org/lwip.git
+      git://github.com/takayuki/lwip-tap.git
+      git://git.savannah.nongnu.org/lwip/lwip-contrib.git
+
+    The Lightweight IP project home page is
+
+      http://savannah.nongnu.org/projects/lwip/
+
+  os/build/buildroot-2014.08
+
+    This directory contains the Buildroot tree used to build a minimal
+    Linux userspace environment in which to deploy the separation kernel
+    applications.  Future versions of BuildRoot may not be compatible
+    with this package.  The BuildRoot project home page is
+
+      http://buildroot.org/
+
+  os/build/linux-deadline
+
+    This directory contains the source for the Linux kernel modified to
+    support Earliest Deadline First (EDF) scheduling, which provides the
+    foundation for the separation kernel deployment environment.
+
+    The latest version of the code (which has been greatly extended but
+    may not be compatible with this package) can be found at
+
+      https://github.com/jlelli/sched-deadline
+
+    and ours can be found at
+
+      https://github.com/GaloisInc/schedtool-dl
+
+  os/build/libdl
+
+    This directory contains a small C library for building programs
+    which need to adjust kernel deadline scheduling parameters.  Our
+    version of this source is based on the repository at
+
+      http://gitorious.org/~isong/sched_deadline/isongs-libdl
+
+    from the "master" branch; ours can be found at
+
+      https://github.com/GaloisInc/libdl
+
+  os/build/schedtool-dl
+
+    This directory contains a version of the "schedtool" program
+    modified to support configuring deadline-scheduled tasks.  Our
+    version of this source is based on the repository at
+
+      http://gitorious.org/~isong/sched_deadline/isongs-schedtool-dl
+
+    Our version can be found at
+
+      https://github.com/GaloisInc/linux-deadline
+
+    Since our development began, the code has since been extended and
+    can be found at
+
+      https://github.com/jlelli/schedtool-dl
+
+System Requirements
+-------------------
+
+This platform has the following build requirements:
+
+  - Git 1.7.2 or later
+  - Python 2.6 or greater
+
+  - Haskell Platform 2013: GHC 7.6.3 and cabal with "sandbox" support
+
+  - If building on CentOS 6:
+    * "Development tools" Yum package group
+    * Packages: libguestfs-tools libpcre3-dev bc libaio-dev gawk
+
+  - If building on Ubuntu "trusty":
+    * Packages: build-essential swig pcre-devel bc libaio-devel
+
+Building
+--------
+
+To build the system, you'll need to ensure that GHC is in your PATH.
+The path to GHC will depend on where you installed it.  You'll also need
+to add ~/.cabal/bin to your PATH.
+
+First, run the setup script to install distribution packages, check out source
+code repositories, and install configuration files.  This step requires sudo
+privileges.
+
+  $ bash setup.sh
+
+Then run the build script to build the entire platform:
+
+  $ bash build.sh
+
+This will build:
+
+  * A Linux kernel image in os/vmlinuz-deadline
+  * A root filesystem image in os/initramfs-buildroot
+  * Demonstration applications in each of the demo directories in user/ with an
+    accompanying initramfs-buildroot modified root filesystem image
+
+Once those images are built, see docs/programming_guide.txt for instructions on
+booting the constructed systems.

@@ -1,0 +1,2 @@
+/usr/local/bin/testapp gen_context(system_u:object_r:testapp_executable_t,s0)
+/tmp/testapp.* gen_context(system_u:object_r:testapp_items_file_t,s0)

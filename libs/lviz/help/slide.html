@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>slide</title>
+</head>
+<body>
+<h1>Slide with Shrimp</h1>
+<span style="font-weight: bold;">Navigation</span>: <a
+ style="text-decoration: underline; font-style: italic; color: rgb(51, 51, 255);"
+ href="overview.html">Home</a>
+&gt; <span style="font-style: italic;">Slide with Shrimp</span><br>
+<h2>Purpose</h2>
+Slide is a graphical user interface for examining SELinux files created
+by Tresys, who has integrated the tool with Shrimp output.&nbsp; This
+allows for quickly identifying the location in the policy files of
+Shrimp errors.<br>
+<h2>Running</h2>
+Slide/Shrimp installation instructions are provided with the release,
+along with an example version of the Reference Policy.&nbsp; Once
+installed and configured,&nbsp; SLIDE can be accessed through eclipse:<br>
+1. Create a Slide Project<br>
+<ol>
+  <li>Create Slide Project</li>
+  <ul>
+    <li>Go to File-&gt;New Slide Project; </li>
+    <li>Pick a project name; </li>
+    <li>Select "Full Reference Policy Project"; </li>
+    <li>Uncheck "Reference Policy already exists" and click Finish, and</li>
+    <li>Once your project appears, right click on the project name, and
+check "Shrimp Policy Checking".</li>
+    <li>Make sure that when you create the project, you point it to a
+full reference policy, and not just the headers, as shrimp requires the
+full policy. (The default path,/usr/share/selinux/devel/include,
+includes headers only.) </li>
+  </ul>
+  <li>Load Reference Policy &nbsp;<br>
+    <ul>
+      <li>To change where SLIDE looks for ref policy In eclipse:<br>
+Window-&gt;Preferences-&gt;SLIDE-&gt;Browse for dir containing policy </li>
+    </ul>
+  </li>
+  <li>Select Shrimp Binary
+    <ul>
+      <li>Windows menu, then Preferences </li>
+      <li>Select SLIDE and expand </li>
+      <li>Select "shrimp" from list: "build console, connections,
+editor, shrimp" </li>
+      <li>Browse to location of shrimp binary<br>
+      </li>
+    </ul>
+  </li>
+  <li>Build Slide Project, <br>
+Project-&gt;Build Project. You can watch progress of the build in
+the Console tab of the Build pane (bottom section of the Eclipse
+window).</li>
+  <li>View Error messages from Shrimp<br>
+Once the build is complete,shrimp's output may be viewed in the
+Problems tab of the Build pane<br>
+  </li>
+</ol>
+<h2>Demonstration</h2>
+Slide/Shrimp was run against an slightly older version of the Reference
+Policy April 2, 2008 version.&nbsp;&nbsp; Shrimp identified a number
+of issues related to the policy which can be seen in the attached
+picture in Figure 1.<br>
+<br>
+<img style="width: 849px; height: 587px;" alt=""
+ src="Screenshot-SLIDE.png"><br>
+<br>
+<span style="font-weight: bold;">Figure 1 - Slide/Shrimp example based
+on a Reference Policy</span><br>
+<br>
+Clicking on individual&nbsp; error/warning messages will pull up one or
+more files to show the policy definition.<br>
+Right clicking on the problem or warning provides a menu of choices:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o <span style="font-weight: bold;">Go To </span>opens
+the editor to the problem selected<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o<span style="font-weight: bold;"> Show In </span>is
+used to show the file in other views if available<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o <span style="font-weight: bold;">Copy </span>is
+used to copy the error to the clipboard<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o <span style="font-weight: bold;">Select All</span>
+is used to select all problems<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o <span style="font-weight: bold;">Quick Fix</span>
+is used to suggest possible fixes for the problems (see next page)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o <span style="font-weight: bold;">Properties
+</span>shows a dialog with the problem description<br>
+<br>
+One of the choices is "Quick Fix", which will propose and implement a
+specific fix when the solution is fairly obvious.&nbsp; Not all
+messages have an appropriate Quick Fix.&nbsp; Figure 2 illustrates the
+Pop-up Quick Fix screen.<br>
+<br>
+<br>
+<img style="width: 567px; height: 544px;" alt=""
+ src="ScreenshotQuickFix.png"><br>
+<br>
+<span style="font-weight: bold;">Figure 2 - Quick Fix Screen for making
+policy repairs based on shrimp warnings or errors.</span><br>
+<br>
+<br>
+<h2>References<br>
+</h2>
+<ul>
+  <li><a href="LowLevelPoliciesPaper.pdf">SELinux Policy Semantics</a>:
+Describes semantics of SELinux and the associated Haskell
+implementation
+of the semantics.</li>
+  <li><a href="SCD-Shrimp-2008-03-04.pdf">Shrimp Mar 2008 Presentation</a>:
+A
+discussion of the Shrimp approach to analyzing the reference policy</li>
+</ul>
+</body>
+</html>

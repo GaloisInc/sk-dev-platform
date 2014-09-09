@@ -1,0 +1,15 @@
+policy_module(test/examples/example3,1.0)
+type web_server_t;
+type init_t;
+type mail_server_t;
+type syslog_t;
+type application_controller_t;
+type application_processor_t;
+type application_validator_t;
+allow application_validator_t web_server_t:webserver php_script;
+allow init_t application_controller_t:controller create;
+allow application_processor_t mail_server_t:mailserver send;
+allow application_controller_t syslog_t:syslog log;
+allow application_controller_t application_processor_t:processor create;
+allow application_controller_t application_validator_t:validator create;
+allow application_validator_t application_processor_t:processor inp;

@@ -1,0 +1,6 @@
+config BR2_PACKAGE_IPY
+	bool "ipy"
+	help
+	  Class and tools for handling of IPv4 and IPv6 addresses and networks
+
+          http://pypi.python.org/pypi/IPy

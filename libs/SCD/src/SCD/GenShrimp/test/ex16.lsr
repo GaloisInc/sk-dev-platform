@@ -1,0 +1,11 @@
+class Process() {
+  port active : { position = subject };
+}
+
+class XClass() {
+  port p;
+  domain proc = Process();
+  proc.active -- p;
+}
+
+domain x = XClass();

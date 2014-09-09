@@ -1,0 +1,9 @@
+config BR2_PACKAGE_LIBSELINUX
+	bool "libselinux"
+        depends on BR2_PACKAGE_LIBSEPOL
+        depends on BR2_PACKAGE_PCRE
+	help
+	  SELinux development headers necessary for building Busybox
+	  with SELinux support
+
+          http://userspace.selinuxproject.org/trac

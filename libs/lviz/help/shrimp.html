@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>shrimp</title>
+</head>
+<body>
+<h1>Shrimp Tools <br>
+</h1>
+<span style="font-weight: bold;">
+Navigation</span>: <a
+ style="text-decoration: underline; font-style: italic; color: rgb(51, 51, 255);"
+ href="overview.html">Home</a>
+&gt; <span style="font-style: italic;">Shrimp Tools</span>
+<h2>Shrimp Overview</h2>
+The Shrimp Language is a subset of the SELinux Reference Policy
+language, chosen based on best practices to minimize errors in policy
+creation and maintenance.&nbsp; A shrimp
+policy can be used as the input to programming the SELinux policy for a
+system using the SELinux tools provided by <a
+ href="http://www.tresys.com">Tresys </a>(http://www.tresys.com).&nbsp;&nbsp;
+<br>
+<br>
+The Shrimp Language includes:<br>
+<ul>
+  <li>kind information for information parameters</li>
+  <li>Multiple-environment information about the interface bodies</li>
+  <li>Local and global information flow-properties</li>
+</ul>
+<span style="font-weight: bold;"></span>The <span
+ style="font-weight: bold; font-style: italic;">Shrimp Tool </span>is
+part of a suite of Policy DSL tools which are illustrated in Figure
+1.&nbsp; The Shrimp Tool provides a 'lint' like analysis of a SELinux
+Reference Policy to identify problems.&nbsp; Shrimp warning messages
+are
+normally output at standard output to understand the problems with a
+policy file. Alternatively, a GUI based on Tresys's slide is available.
+The Slide/shrimp GUI will allow for viewing of Shrimp errors and
+jumping
+to the source file location of the problem, simplifying understanding
+and debugging.<br>
+<br>
+<span style="font-weight: bold;"><br>
+</span><img style="width: 393px; height: 441px;" alt="" src="tools.jpg"><br>
+<br>
+<span style="font-weight: bold;">Figure 1 - Shrimp in the Policy DSL
+tool Flow</span><br>
+<h2>Running Shrimp</h2>
+<code>The shrimp executable has two different use models as shown
+below.&nbsp; For the generation of HTML documentation on a policy, it
+is
+run as in the following<br>
+</code><code><br>
+</code>
+<table
+ style="text-align: left; width: 685px; height: 28px; color: rgb(255, 0, 0);"
+ border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>shrimp [global
+options] html [--no-sort] &lt;input directory&gt; &lt;output
+directory&gt;</code></td>
+    </tr>
+  </tbody>
+</table>
+<code>
+&nbsp; Generate HTML documentation from policy in &lt;input
+directory&gt; and write it to &lt;output directory&gt;.<br>
+Example:<br>
+</code><code></code>
+<table style="text-align: left; width: 685px; height: 28px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>shrimp html ../refpolicy
+policy_html</code></td>
+    </tr>
+  </tbody>
+</table>
+&nbsp;creates html files describing ../refpolicy and puts the files in
+the directory policy_html<code></code><br>
+<code><br>
+</code>To run shrimp to analyze a policy, it is invoked as follows:<br>
+<code></code>
+<table
+ style="text-align: left; width: 685px; height: 28px; color: rgb(255, 0, 0);"
+ border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>shrimp [global options]
+kindcheck &lt;input directory&gt; [input
+modules]</code></td>
+    </tr>
+  </tbody>
+</table>
+<code>Analyze [input modules] given a policy in &lt;input
+directory&gt;.<br>
+If no [input modules] are given, analyze the policy instead.<br>
+&nbsp; Analysis is sent to standard out</code><code>
+</code><br>
+<code></code><code><br>
+Example:</code>
+<table style="text-align: left; width: 685px; height: 29px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>shrimp kindcheck
+../refpolicy<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+runs a kindcheck on a policy located at ../refpolicy<br>
+<br>
+In both cases, the [global options] are defined below:<br>
+<table
+ style="text-align: left; width: 685px; height: 129px; color: rgb(255, 0, 0);"
+ border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>Global options<br>
+--ifdefs &lt;file&gt;&nbsp;&nbsp;&nbsp; Read ifdef declarations from
+&lt;file&gt;<br>
+--implicit-require Make all symbols implicitly required<br>
+--xml-errors&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output errors in XML
+format<br>
+--no-group&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Don't group
+error messages according to message type<br>
+Local options:<br>
+--no-sort&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Keep
+definitions in file order</code> </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h4>HTML Output</h4>
+When html output is generated form the policy file, a list of html
+files are created in the &lt;output directory&gt;.&nbsp; <br>
+Start with <span style="font-weight: bold;">index.html</span>, as it
+summaries the files in a table format by module area, an excerpt is
+shown below<br>
+<table border="2" cellspacing="1">
+  <tbody>
+    <tr>
+      <th>admin</th>
+      <th>apps</th>
+      <th>kernel</th>
+      <th>services</th>
+      <th>system</th>
+    </tr>
+    <tr class="even">
+      <td> acct </td>
+      <td> ada </td>
+      <td> corecommands </td>
+      <td> afs </td>
+      <td> application </td>
+    </tr>
+    <tr class="odd">
+      <td> alsa </td>
+      <td> authbind </td>
+      <td> corenetwork </td>
+      <td> aide </td>
+      <td> authlogin </td>
+    </tr>
+    <tr class="even">
+      <td> amanda </td>
+      <td> awstats </td>
+      <td> devices </td>
+      <td> amavis </td>
+      <td> clock</td>
+    </tr>
+  </tbody>
+</table>
+~~~ rest cut here ~~~<br>
+<br>
+The index file also contains:<br>
+<ul>
+  <li>&nbsp;a list of translation issue identified, including unused
+parameters, unused identifiers, and compilation errors.</li>
+  <li>A list of clickable macro definitions used. Example:<br>
+acct_domtrans(domain
+: {domain})<br>
+  </li>
+  <li>and a page of Support Definitions, showing the interpretation of
+each item by direction, kind, identifier, and origin as appropriate:<br>
+Example: <br>
+    <big>append_lnk_files_pattern</big></li>
+</ul>
+<p style="margin-left: 40px;"> </p>
+<table border="2" cellspacing="1">
+  <tbody>
+    <tr>
+      <th> <br>
+      </th>
+      <th>
+      <div class="header">identifier</div>
+      </th>
+      <th>
+      <div class="header">kind</div>
+      </th>
+      <th>
+      <div class="header">origin</div>
+      </th>
+    </tr>
+    <tr class="even">
+      <td rowspan="4">
+      <div class="header">direct input</div>
+      </td>
+      <td>$1</td>
+      <td>domain</td>
+      <td> <br>
+      </td>
+    </tr>
+    <tr class="odd">
+      <td>$2</td>
+      <td>type/attribute</td>
+      <td> <br>
+      </td>
+    </tr>
+    <tr class="even">
+      <td>$3</td>
+      <td>type/attribute</td>
+      <td> <br>
+      </td>
+    </tr>
+    <tr class="odd">
+      <td>append_lnk_file_perms</td>
+      <td>permission</td>
+      <td> <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3>Kindcheck</h3>
+Shrimp will provide a policy checking if "kindcheck" option is chosen.
+The resulting problems go to standard output and can be output in XML
+format for easier viewing and loading into other programs.&nbsp; <a
+ href="policy.xml"></a><br>
+<h2>Shrimp Checks</h2>
+Shrimp performs a number of different checks on a Reference
+Policy:&nbsp; <br>
+<br>
+<span style="font-weight: bold;">Required elements:</span><br>
+<ul>
+  <li>File base name</li>
+  <li>module name</li>
+  <li>kind</li>
+  <li>macro name in a macro definition</li>
+  <li>layer &amp; module names<br>
+  </li>
+</ul>
+Warnings<br>
+<ul>
+  <li>Call To Undefined Macro</li>
+  <li>Duplicate Access Vector Definition</li>
+  <li>Duplicate Class Permission</li>
+  <li>Duplicate Common Definition</li>
+  <li>Duplicate Common Permission</li>
+  <li>Duplicate Definitions&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Duplicate Identifier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Duplicate Macro Definition&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Duplicate Occurrences&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Duplicate Symbol Declaration&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Fragment Kind Error&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Illegal
+Fragment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Illegal Macro
+Use&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Illegal Parameter Use&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Illegal Symbol Declarations&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Illegal Symbol Declarations In Interface</li>
+  <li>Illegal Symbol Reference</li>
+  <li>Inconsistent Macro Definitions&nbsp;&nbsp; </li>
+  <li>Inconsistent Symbol Definitions</li>
+  <li>Kind
+Mismatch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </li>
+  <li>Mismatch Between Number Of Documented Vs. Referenced Parameters</li>
+  <li>Missing Access Vector Definition</li>
+  <li>Missing Module Configuration</li>
+  <li>Module Id Mismatch</li>
+  <li>Mutually Recursive</li>
+  <li>Reference Policy Warn Call&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Undefined Common Id</li>
+  <li>Undefined Identifier</li>
+  <li>Undefined Identifiers</li>
+  <li>Undefined
+Macro&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </li>
+  <li>Undocumented Parameters</li>
+  <li>Unknown Ifdef Id</li>
+  <li>Unknown Module Configuration Names</li>
+  <li>Unused Parameters</li>
+  <li>Wrong Number Of Arguments</li>
+</ul>
+<h2>Reference Papers<br>
+</h2>
+<a href="LowLevelPoliciesPaper.pdf">SELinux Policy Semantics</a>:
+Describes semantics of SELinux and the associated Haskell
+implementation
+of the semantics.<br>
+<a href="SCD-Shrimp-2008-03-04.pdf">Shrimp Mar 2008 Presentation</a>: A
+discussion of the Shrimp approach to analyzing the reference policy<br>
+<br>
+</body>
+</html>

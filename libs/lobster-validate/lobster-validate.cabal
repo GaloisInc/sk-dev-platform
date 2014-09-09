@@ -1,0 +1,16 @@
+Name: lobster-validate
+Version: 0.1
+Description: Non-target specific Lobster back-end
+License: AllRightsReserved
+License-file: LICENSE
+Cabal-version: >= 1.2
+Build-type: Simple
+Author: Joe Hurd, Brett Letner, Magnus Carlsson
+Maintainer: joe@galois.com, bletner@contractor.galois.com, magnus@galois.com
+
+Executable lobster-validate
+  Main-is: Main.hs
+  Build-Depends:
+           base >= 4,
+           deepseq >= 1.1 && < 1.2,
+           lobster >= 0.1

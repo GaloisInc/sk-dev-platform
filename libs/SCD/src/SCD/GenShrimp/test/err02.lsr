@@ -1,0 +1,7 @@
+class XClass() {
+  port p;
+  p -- q;
+  port q;
+}
+
+domain x = XClass();

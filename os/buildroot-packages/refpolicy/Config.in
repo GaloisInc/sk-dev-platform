@@ -1,0 +1,7 @@
+config BR2_PACKAGE_REFPOLICY
+       bool "refpolicy"
+       depends on BR2_PACKAGE_CHECKPOLICY && BR2_PACKAGE_LIBSEPOL && BR2_PACKAGE_LIBSEMANAGE && BR2_PACKAGE_POLICYCOREUTILS
+       help
+         SELinux reference policy
+
+          http://userspace.selinuxproject.org/trac

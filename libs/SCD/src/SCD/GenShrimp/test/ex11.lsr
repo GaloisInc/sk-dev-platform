@@ -1,0 +1,14 @@
+class Process() {
+  port active : { position = subject };
+}
+
+class Foo() {
+  port p : { position = object };
+  port q : { position = object };
+}
+
+domain foo = Foo();
+domain proc = Process();
+
+proc.active -- foo.p;
+proc.active -- foo.q;

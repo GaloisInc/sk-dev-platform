@@ -1,0 +1,5 @@
+policy_module(test/examples/example1,1.0)
+type app_f_t;
+type app_p_t;
+allow app_p_t app_f_t:file read;
+allow app_p_t app_f_t:file write;

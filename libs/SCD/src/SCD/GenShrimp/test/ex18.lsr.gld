@@ -1,0 +1,31 @@
+INPUT: ex18.lsr
+class Process() {
+  port active : { position = subject };
+}
+
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class XClass() {
+  port p;
+  domain proca = Process();
+  domain procb = Process();
+  proca.active -- p;
+  procb.active -- p;
+}
+
+domain x = XClass();
+domain filea = File("a.txt");
+x.p -- filea.getattr;
+OUTPUT: ex18.lsr
+module.te: ex18.lsr
+policy_module(module,1.0)
+type x_proca_t;
+type x_procb_t;
+type filea_t;
+allow x_procb_t filea_t:file getattr;
+allow x_proca_t filea_t:file getattr;
+module.fc: ex18.lsr
+filea_t "a.txt"
+

@@ -1,0 +1,6 @@
+config BR2_PACKAGE_CHECKPOLICY
+	bool "checkpolicy"
+	help
+	  SELinux policy checker
+
+          http://userspace.selinuxproject.org/trac

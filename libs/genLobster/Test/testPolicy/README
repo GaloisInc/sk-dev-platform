@@ -1,0 +1,7 @@
+This test case takes a piece of the reference policy - files.if, .te, .fc and 
+runs it into genLobster to create a lobster file. 
+This file requires the addition of Files(), Process() and domain placmement.
+viewable_output.lsr is edited output to include these so that it can be viewed
+in lviz or compiled by lobster-selinux.
+
+files.fc & files.te are outputs from the lobster-selinux compiler.

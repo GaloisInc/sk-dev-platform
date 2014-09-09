@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBDEADLINE
+	bool "libdeadline"
+	help
+	  Shared library for using the Linux deadline scheduling
+	  system call API
+
+          http://gitorious.org/sched_deadline/libdl

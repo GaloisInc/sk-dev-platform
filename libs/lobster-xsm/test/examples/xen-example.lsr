@@ -1,0 +1,11 @@
+// Simple example using Xen and two VM 'domains'
+
+domain d1 = Domain ();
+domain d2 = Domain ();
+domain xen = Xen ();
+domain e = Event ();
+
+xen.readconsole --> d1.active;
+d1.active --> e.create;
+e.bind --> d2.active;
+d2.active --> xen.writeconsole;

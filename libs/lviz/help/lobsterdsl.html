@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>Lobster DSL</title>
+</head>
+<body>
+<h1>Lobster DSL<br>
+</h1>
+<address><span style="font-weight: bold;">Navigation</span>: <a
+ href="overview.html">Home</a>
+&gt; Lobster
+DSL<br>
+</address>
+<br>
+<h2>Overview</h2>
+Lobster DSL (Domain Specific Language) defines high level policies that
+can describe specific policies such as those for guards, VM's, or
+SELinux.&nbsp; The Lobster DSL can be compiled into specific policy
+once it is
+created and tested.&nbsp; A high level policy allows for policy
+definitions across systems containing multiple different types of
+policy enforcement mechanims.<br>
+<h2>DSL Summary</h2>
+The DSL is organized in an object oriented fashion. Classes are build
+to define general policies. These classses are instantiated as specific
+named commains.&nbsp; Classes may contain ports, internally placed
+domains, and connections.&nbsp; With these conventions, a hierarchy can
+be built to describe a complex policy.&nbsp; The highest level of the
+hierarchy can contain 'class' definitions, 'domain' placements of those
+classes, and 'connections' which connnect ports on placed domains.<br>
+<br>
+The main elements of the Lobster DSL are:<br>
+<ul>
+  <li>'class' definition</li>
+  <li>'domain' instantiation</li>
+  <li>'port' definition in a class showing the connnection points</li>
+  <li>'properties' that can be associated with port definitions<br>
+  </li>
+  <li>'connection' between two ports that are instantiated</li>
+</ul>
+<br>
+<h2>Definitions used in explanation<br>
+</h2>
+Bold italic items represent items which are non-literal and are defined.<br>
+Other items are literal characters<br>
+<h3>Lobster Syntax</h3>
+All statements are terminated by a semicolon ';'. Some statements use
+curly brackets '{}' to define the contents of the class.&nbsp; <br>
+comments are defined by either // - comment to the end of the line and
+/* */ which surrounds the commented text.<br>
+<h3>Class</h3>
+syntax is:<br>
+class <span style="font-style: italic; font-weight: bold;">className</span>(
+<span style="font-style: italic; font-weight: bold;">arguments </span>)
+{ <span style="font-style: italic; font-weight: bold;">classContents </span>}<br>
+<br>
+where <span style="font-style: italic; font-weight: bold;">className</span>
+is an alphanumeric name beginning with a <span
+ style="font-style: italic; font-weight: bold;">uppercase </span>letter.
+<br>
+<span style="font-style: italic; font-weight: bold;">arguments </span><span
+ style="font-style: italic;"></span>are variable passed into the class
+at domain placement <br>
+<span style="font-style: italic; font-weight: bold;">classContents </span>is
+one or more port defintions, domain placements, or connections
+separated by semicolons.<br>
+<br>
+Examples:<br>
+<table style="text-align: left; width: 419px; height: 172px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="color: rgb(51, 51, 255);">class D() { <br>
+&nbsp; port p ; <br>
+} <br>
+      <br>
+class File(filenameRegex) {<br>
+&nbsp; port read : {direction = output, position = object };<br>
+&nbsp; port write : {driection = input, position = object );<br>
+}</span></td>
+    </tr>
+  </tbody>
+</table>
+<span style="color: rgb(51, 51, 255);"></span><br>
+<h3>Domain</h3>
+syntax is:<br>
+domain <span style="font-style: italic; font-weight: bold;">dName </span>=
+<span style="font-style: italic; font-weight: bold;">className</span>(<span
+ style="font-style: italic; font-weight: bold;"> arguments</span>) ;<br>
+<br>
+where <span style="font-style: italic; font-weight: bold;">dName </span>is
+a alphanumeric name starting with a <span
+ style="font-style: italic; font-weight: bold;">lowercase </span>alpha<br>
+<span style="font-style: italic; font-weight: bold;">className </span>is
+a class defined earlier in the lobster file<br>
+arguments are specific values to use at instantiation<br>
+<br>
+Example:<br>
+<table style="text-align: left; width: 422px; height: 52px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="color: rgb(51, 51, 255);">class D(t) { port p {type=t}; } </span><br
+ style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">domain d = D(requests);</span></td>
+    </tr>
+  </tbody>
+</table>
+<span style="color: rgb(51, 51, 255);"></span><span
+ style="color: rgb(51, 51, 255);"></span><br>
+<h3>Port</h3>
+A port defines a connection point on a class.&nbsp; Ports may have
+properties associated with them.&nbsp; <br>
+syntax is:<br>
+port <span style="font-style: italic; font-weight: bold;">portName&nbsp;&nbsp;
+</span>OR<br>
+port <span style="font-style: italic; font-weight: bold;">portName </span>:
+{ <span style="font-style: italic; font-weight: bold;">propertyAssignments
+</span>};<br>
+<br>
+where <span style="font-style: italic; font-weight: bold;">portName </span>is
+a alphanumeric name for that port.&nbsp; It must be unique for the class<br>
+and <span style="font-style: italic; font-weight: bold;">propertyAssignments
+</span>are one or more <span
+ style="font-style: italic; font-weight: bold;">propName </span>= <span
+ style="font-style: italic; font-weight: bold;">propValue</span>;
+statements<br>
+<br>
+Example:<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="color: rgb(51, 51, 255);">port p : {direction =
+output } ;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">port write : {direction =
+input};</span></td>
+    </tr>
+  </tbody>
+</table>
+<span style="color: rgb(51, 51, 255);"></span><span
+ style="color: rgb(51, 51, 255);"><br>
+</span>
+<h3>Port Properties</h3>
+Port property assignment can enforce checking of the types of
+connections that can be connected to the port.&nbsp; Ports may have the
+direction properties of input, output, or bidirectional.&nbsp; <br>
+<h4>Postion Property<br>
+</h4>
+For SELinux, ports must also have properties of position=subject and
+position=object.&nbsp; Port with subject properties connect to items
+with object properties.&nbsp; 'object' ports cannot connect to 'object'
+ports and 'Subject' ports cannot connect to 'subject' ports as both
+these cases will cause compiler errors.
+<h4>Direction Property</h4>
+The direction property may be set on any port to values of 'input',
+'output', or
+'bidirectional'.&nbsp; A port with input may only be connected to an
+output port; an output port may only go to an input port.&nbsp;
+Bidirectional ports can only go to bidirectional ports.<br>
+<h4>Type Property<br>
+</h4>
+<span style="color: rgb(255, 0, 0);"></span>Connections are checked to
+verify that ports match in type property values.&nbsp; Type property
+values are either arguments passed into a class or must be a named
+empty class.&nbsp; The empty calss can be defined at the top level or
+locally in a class as it is used.<br>
+<br>
+Example showing class Track created inside Syslog and used as a type on
+port 'log'<br>
+<table style="text-align: left; width: 303px; height: 72px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">class Syslog() {<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp; class Track() { }</span><br>
+&nbsp; port log : {<span style="color: rgb(255, 0, 0);">type = Track,</span>
+position = object};<br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Example showing passing an arugment into a class<br>
+<table style="text-align: left; width: 501px; height: 119px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">class SimpleFile(<span
+ style="color: rgb(255, 0, 0);">contents</span>, filenameRegex) {<br>
+&nbsp; domain file = File(filenameRegex);<br>
+&nbsp; port read : {<span style="color: rgb(255, 0, 0);">type = contents</span>};<br>
+}<br>
+&nbsp;domain items = SimpleFile(Items, itemsFilenameRegexp);<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h3>Connection</h3>
+Syntax is:<br>
+<span style="font-style: italic; font-weight: bold;">domainName.portName
+dirArrows&nbsp; domainName.portName</span> ;<br>
+<br>
+Where <span style="font-style: italic; font-weight: bold;">domainName </span><span
+ style="font-style: italic;"></span>is a named domain
+placement.&nbsp;&nbsp; For ports of a class which a connection is being
+made inside-of, the port name can be refered to directly.<br>
+Example:&nbsp; <span style="font-weight: bold;">portA </span><span
+ style="font-weight: bold;"></span>is the port in the class
+it is placed in<br>
+<br>
+<span style="font-style: italic; font-weight: bold;">dirArrows </span>are
+direciton arrows legal values are:<br>
+&lt;-- flow from right port to left port only legal<br>
+--&gt; flow from left port to right port only legal<br>
+&lt;--&gt; flow either direction is legal<br>
+-- indicates a connection with no policy statement associated<br>
+<big><br>
+</big>Direction property on ports must be consistant with the direction
+arrows show above.&nbsp; Direction=bidirectional ports must be
+connected to with &lt;--&gt; or -- arrows.&nbsp; Direction=Input port
+property must be connected with &lt;-- or --&nbsp; and Direction=Output
+ports must be connected with --&gt; or -- <br>
+<big><br>
+</big>Example:<br>
+<table style="text-align: left; width: 463px; height: 32px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="color: rgb(51, 51, 255);">high.active &lt;--&gt;
+secret.readwrite ;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">low.active &lt;--
+internet.readwrite ;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">low.active --&gt;
+secret.readwrite ;</span><br style="color: rgb(51, 51, 255);">
+      <span style="color: rgb(51, 51, 255);">high.active --
+internet.readwrite ;</span></td>
+    </tr>
+  </tbody>
+</table>
+<span style="color: rgb(51, 51, 255);"></span><span
+ style="color: rgb(51, 51, 255);"></span><br>
+<h3>Reserved Words<br>
+</h3>
+<table style="text-align: left; width: 472px; height: 88px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">bidirectional </td>
+      <td style="vertical-align: top;">class<br>
+      </td>
+      <td style="vertical-align: top;">domain<br>
+      </td>
+      <td style="vertical-align: top;">input<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">object<br>
+      </td>
+      <td style="vertical-align: top;">output<br>
+      </td>
+      <td style="vertical-align: top;">port<br>
+      </td>
+      <td style="vertical-align: top;">position<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">subject<br>
+      </td>
+      <td style="vertical-align: top;">type<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3>Reserved Symbols<br>
+</h3>
+<table style="text-align: left; width: 268px; height: 148px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">(<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">)<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">{<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">}<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><big>;</big><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">=<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;"><big><big>.</big></big><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">*<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">&lt;--&gt;<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">--&gt;<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">&lt;--<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">--<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><big><big>,</big></big><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">&nbsp;&nbsp;&nbsp;
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Lobster DSL Example</h2>
+The following example illustrates a lobster DSL file:<br>
+<table style="width: 583px; height: 199px;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td><code>class Process() { port
+active : {position
+= subject}; }<br style="font-family: Courier New;">
+class Network() { port
+readwrite :
+{position = object}; }<br>
+      <br style="font-family: Courier New;">
+domain internet =
+Network();<br style="font-family: Courier New;">
+domain secret = Network();<br style="font-family: Courier New;">
+domain low = Process();<br style="font-family: Courier New;">
+domain high = Process();<br style="font-family: Courier New;">
+      <br style="font-family: Courier New;">
+high.active &lt;--&gt;
+secret.readwrite ;<br style="font-family: Courier New;">
+low.active &lt;--&gt;
+internet.readwrite ;<br style="font-family: Courier New;">
+low.active --&gt;
+secret.readwrite ;</code> </td>
+    </tr>
+  </tbody>
+</table>
+The information flow for this example is shown graphically in the
+following:<br>
+<img style="width: 223px; height: 190px;" alt="" src="symb1.jpg"><br>
+<br>
+<h2>References</h2>
+<a href="Policy-DSL-HCSS-2009.pdf">Policy-DSL-2009</a> A summary
+of the Policy DSL work, covering shrimp, symbion and lobster. <br>
+<a href="lobster.pdf">Lobster DSL paper</a> describes the lobster
+generic policy language and relates it to SELinux. Note that this paper
+is out of date with reference to the keyword 'type' and port properties
+'input' and 'output' are no longer supported.<span
+ style="color: rgb(255, 0, 0);"><br>
+</span><br>
+</body>
+</html>

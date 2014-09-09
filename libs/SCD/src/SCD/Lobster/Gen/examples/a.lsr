@@ -1,0 +1,63 @@
+// A template or an implementation generates a class.  If a macro
+// (template or interface) requires types from the class, we give the
+// class a port with the same name as the macro.
+
+class A_te() {
+  port a_a;
+  port a_b;
+  port a_e;
+  domain f = File("/etc/a/.*");
+  domain f2 = File("/etc/another");
+  domain t = Process();
+  t.active -- f.read;
+  t.active -- f.write;
+  t.active -- f2.read;
+  t.active -- f2.write;
+  a_a -- f.read;
+  a_b -- f.write;
+  a_e -- f.read;
+}
+class A_b() {
+  port a_te;
+  port a_e;
+  port a_f;
+  domain p = Process();
+  a_te -- p.active;
+  a_e -- p.signal;
+  a_f -- p.active;
+}
+class A_c() {
+  port a_c;
+  port a_d;
+  port a_f; // a_f needs two ports
+  port a_f2; 
+  domain p = Process();
+  domain f = File();
+  p.active -- f.read;
+  a_c -- f.ioctl;
+  a_d -- p.signal;
+  a_f -- f.write;
+  a_f2 -- f.getattr;
+  
+}
+class A_g() {
+  port b_a_te;
+  port a_g;
+
+  // a_b
+  domain b = A_b();
+  b_a_te -- b.a_te;
+
+  // a_c
+  domain c = A_c();
+  a_g -- c.a_c;
+
+  // a_d
+  a_g -- c.a_d;
+
+  // a_f
+  b.a_f -- c.a_f;
+  a_g -- c.a_f2;
+}
+
+// TODO: top-level instantiation examples

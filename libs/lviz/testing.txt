@@ -1,0 +1,39 @@
+LViz Test Notes
+
+Because LViz is a graphical file, testing has consisted of stepping through the different functions in the tool and running a number of test cases against it.
+
+A. Testing functionality of all menu items:
+Using example5.lsr, located in lobster/test/examples
+
+1. start Lviz from the command line by doing:
+lviz example5.lsr
+verify that lviz starts up and loads the example.
+close lviz using Menu item File/Quit
+
+2. start lviz without any arguments.  Then try opening and closing sample lobster files
+(file menu)
+
+
+3. Open example5 and test View/Expand All, Collapse All from the menu.
+
+4. Open example5.lsr and right click over domain D to collapse just that domain and then exampand it again to test localized collapse/expand.
+
+5. example6 -  View tests.
+a. select menu View/wrap and the layout should shift to vertical.
+b. the select View/NoOverlap and the lines should shift from straight.
+c. then select View/Curve edges to round corners
+d. then select View/Lens - use up/down cursor keys to scan across domain.
+e. set Edit/Lens to 29. then move cursor. Different relation between large and small shapes shoudl be observed.
+f. turn off lensing.
+
+6. Start Lviz. Select Help/Help Menu - should startup broswer (Ubuntu). Doesn't work properly for other Linux OS.
+Select Help/About to see the versioning.
+
+7. Start example28.  The colors for the layer nesting should be present, repeating every 4 layers of hierarchy.  Select Edit/Colors and adjust the level colors.
+Note that 'Edge' colors is really line colors (not domain edges).
+Help in this menu does not work.
+
+B. All test cases
+1. Open all all error test cases in lobster/test/examples  Each should fail with a pop up window. For symbion errors, they should show assert errors.
+
+2. open all example#.lsr test cases to verify that they open properly and display something reasonable. Some will display symbion 'Pass' messages in the standard output.

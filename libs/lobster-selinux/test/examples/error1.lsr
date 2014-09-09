@@ -1,0 +1,20 @@
+// fail case: cannot establish subject/object relationship
+
+class X() {
+  port na ;
+}
+
+class Y() {
+  port na ;
+}
+
+domain d = X();
+domain e = Y();
+
+d.na -- e.na;
+
+
+
+
+
+

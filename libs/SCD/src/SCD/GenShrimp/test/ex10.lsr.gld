@@ -1,0 +1,25 @@
+INPUT: ex10.lsr
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class Foo() {
+  port p : {position = subject};
+  port q : {position = subject};
+}
+
+domain foo = Foo();
+domain file = File("t.txt");
+
+foo.p -- file.getattr;
+foo.q -- file.getattr;
+OUTPUT: ex10.lsr
+module.te: ex10.lsr
+policy_module(module,1.0)
+type file_t;
+type foo_t;
+allow foo_t file_t:file getattr;
+allow foo_t file_t:file getattr;
+module.fc: ex10.lsr
+file_t "t.txt"
+

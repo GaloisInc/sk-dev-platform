@@ -1,0 +1,26 @@
+INPUT: err05.lsr
+class Subj1() {
+  port subj1 : { position = subject } ;
+}
+
+class Obj1() {
+  port obj1 ;
+  class Obj0() {
+   port obj0 : { position = object };
+  }
+  domain d1 = Obj0();
+  obj1 -- d1.obj0;
+}
+
+domain x = Subj1();
+domain y = Obj1();
+x.subj1 -- y.obj1;
+OUTPUT: err05.lsr
+lobster: ERROR: couldn't generate native SELinux from the Lobster policy file:
+bad primitive class ContextClass (Context [ClassId (UIdent "Obj1")]) (ClassId (UIdent "Obj0"))
+primitive classes must be declared at the top level
+module.te: err05.lsr
+
+module.fc: err05.lsr
+cat: module.fc: No such file or directory
+

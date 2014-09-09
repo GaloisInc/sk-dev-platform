@@ -1,0 +1,8 @@
+INPUT: ex01.lsr
+class Foo() {
+ }
+OUTPUT: ex01.lsr
+module.te: ex01.lsr
+policy_module(module,1.0)
+module.fc: ex01.lsr
+

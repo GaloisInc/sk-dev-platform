@@ -1,0 +1,6 @@
+config BR2_PACKAGE_SEPOLGEN
+	bool "sepolgen"
+	help
+	  SELinux policy generator
+
+          http://userspace.selinuxproject.org/trac

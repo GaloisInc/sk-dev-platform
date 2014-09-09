@@ -1,0 +1,14 @@
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class Foo() {
+  port p : {position = subject};
+  port q : {position = subject};
+}
+
+domain foo = Foo();
+domain file = File("t.txt");
+
+foo.p -- file.getattr;
+foo.q -- file.getattr;

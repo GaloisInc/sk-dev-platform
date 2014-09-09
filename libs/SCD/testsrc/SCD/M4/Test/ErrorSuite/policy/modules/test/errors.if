@@ -1,0 +1,69 @@
+## <summary>Test interface for exercising shrimp errors</summary>
+
+########################################
+## <summary>
+##	Define a mutually-recursive interface.
+## </summary>
+#
+interface(`mutrec_iface',`
+        gen_require(`
+              type valid_type_t;
+        ')
+
+        mutrec_other_iface(invalid);
+')
+
+########################################
+## <summary>
+##	Raise a variety of errors.
+## </summary>
+#
+interface(`various_errors',`
+	gen_require(`
+                # Raise undefined identifier error.
+		type undefined_type_t;
+                type valid_type_t;
+
+                # Expecting permission set, getting class set
+                # will raise KindMismatch.
+                class error_class_three { file_class_set };
+	')
+
+        # Raise fragment kind error.
+        domain_trans_fragmented(-undefined_type, undefined_type, undefined_type);
+
+        # Raise illegal fragment error.
+        domain_illegal_fragment_use(undefined_type, undefined_type, undefined_type);
+
+        # Raise wrong number of arguments error.
+        domain_trans(undefined_type_t, undefined_type_t);
+
+        # Raise undefined ids error.
+	allow undefined_t undefined_t:fifo_file { read write };
+
+        # Raise an illegal symbol declaration error.
+        # Raise undocumented parameters.
+        type $1;
+
+        # Raise RefPolicyWarnCall
+        allow valid_type_t valid_type_t:error_class_three stat_file_perms;
+
+        # Raise UndefinedCall
+        this_macro_is_undefined(invalid_argument);
+')
+
+########################################
+## <summary>
+##	Raise a duplicate definition error.
+## </summary>
+#
+interface(`error_duplicate_def',`
+')
+
+########################################
+## <summary>
+##	Raise a duplicate definition error.
+## </summary>
+#
+interface(`error_duplicate_def',`
+')

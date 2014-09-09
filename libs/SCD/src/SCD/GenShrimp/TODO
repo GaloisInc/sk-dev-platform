@@ -1,0 +1,20 @@
+Possible future work:
+  Research
+  - discuss my lobster experience/suggestions with Joe
+
+  - understand and document all functionality provided in SELinux M4 modules.
+    - coordinate with Joel(?)
+
+  - write EDSL using CoreLob or SimpleLob as a base
+  - Brad interested in dynamic policies, so separate compilation is important
+
+  SL2CS
+  - actually generate SELinux M4/Shrimp instead of homegrown M4.
+    - pretty-print M4 (possibly use Magnus' M4 ast and pretty-printer)
+  - integrate sl2cs into lobster (integrate lobster into sl2cs?)
+  - resolve/fix limitations
+
+  QuickCheck
+  - Modify qc infrastructure so that the output of sl2cs is automatically checked against the output of lobster, and differences are reported.
+  - make sure qc infrastructure is generating all the cases we are interested in.
+  - fix the fixmes (currently only in the qc code)

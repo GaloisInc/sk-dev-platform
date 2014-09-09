@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>lobstercompiler.html</title>
+</head>
+<body>
+<h1>Lobster compiler<br>
+</h1>
+<span style="font-weight: bold;">Navigation</span>: <a
+ href="overview.html">Home</a>
+&gt; <span style="font-style: italic;">Lobster
+Compiler</span><br>
+<h2>Purpose</h2>
+The Lobster DSL compiler can be used to generate policies for SELinux
+systems. The Lobster compiler will first run any embedded symbion tests
+and report errors found. If no symbion errors are found, the compiler
+will generate code that is in "Shrimp" format - a specific variation of
+the SELinux reference policy format that can be analyzed by the Shrimp
+tool set created as part of the Policy DSL project.&nbsp; The Shrimp
+format does not have the hierarchy found in lobster as all of the
+domains have been flattened.<br>
+<h2>Invoking Lobster Compiler<br>
+</h2>
+&nbsp;The Lobster Compiler has been split into 3 executable files: <br>
+<ul>
+  <li>lobster-selinux - run the lobster parser, symbion, and generates
+selinux compatible output files</li>
+  <li>lobster-xsm - runs the lobster parser, Symbion, and generate Xen
+policy compatible output files</li>
+  <li>lobster-validate -runs the lobster parser and symbion only.<br>
+  </li>
+</ul>
+Each of these files takes the same lobster arguments:<br>
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">[executable][-I
+include.lsr] [-o module] input.lsr ...
+</span><br style="font-family: Courier New; color: rgb(255, 0, 0);">
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">&nbsp;
+-I include.lsr --include=include.lsr&nbsp;&nbsp;&nbsp; <span
+ style="color: rgb(0, 0, 0);">Include
+a lobster file
+include.lsr</span>
+</span><br style="font-family: Courier New; color: rgb(255, 0, 0);">
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">&nbsp;
+-o module&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;--module=module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<span style="color: rgb(0, 0, 0);">Set
+the name of the output module</span>
+</span><br style="font-family: Courier New; color: rgb(255, 0, 0);">
+<span style="font-family: Courier New; color: rgb(255, 0, 0);"><span
+ style="color: rgb(0, 0, 0);"></span></span><br>
+<span style="color: rgb(255, 0, 0);">[executable]</span> is one of
+"lobster-selinux", "lobster-xsm", or "lobster-validate".&nbsp; Note
+that the -o &amp; --module switch is ignored for the lobster-validate
+case.<br>
+<br>
+Alternatively, a 'lobster' shell script as been created with associated
+switches
+for each executable.&nbsp; If your path variable points to the bin
+directory of this release, it should property run the executable
+desired.&nbsp; The format is:<br>
+<br>
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">lobster
+[-I include.lsr] [-o module] input.lsr ...
+</span><br style="font-family: Courier New; color: rgb(255, 0, 0);">
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">&nbsp;
+-I include.lsr --include=include.lsr&nbsp;&nbsp;&nbsp; <span
+ style="color: rgb(0, 0, 0);">Include
+a lobster file
+include.lsr</span>
+</span><br style="font-family: Courier New; color: rgb(255, 0, 0);">
+<span style="font-family: Courier New; color: rgb(255, 0, 0);">&nbsp;
+-o module&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;--module=module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<span style="color: rgb(0, 0, 0);">Set
+the name of the output module</span>
+<br>
+&nbsp; --validate&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; <span style="color: rgb(0, 0, 0);">Run the compiler and
+Symbion only</span><br>
+&nbsp; --selinux&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; <span style="color: rgb(0, 0, 0);">compile,
+symbion, then
+generate selinux output</span><br>
+&nbsp; --xsm&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="color: rgb(0, 0, 0);">compile, symbion, the generate Xen
+security module
+output</span></span><span
+ style="font-family: Courier New; color: rgb(255, 0, 0);"><span
+ style="color: rgb(0, 0, 0);"></span></span><br>
+<h3>Switch Notes</h3>
+The -I option is provided to simplify Lobster development.&nbsp;
+The user can create a file with "class definitions" which are
+referenced by the -I option, while using these class definitions in
+multiple different lobster files.<br>
+The -o option defines the module name being output, which is also the
+name of the file prefix being output.&nbsp; If not included the default
+name of "module" is used.<br>
+--selinux is used to generate SELinux policy compatible with the
+reference policy.<br>
+--xsm is used when generating Xen VM policies which have slight
+variations from the standard SELinux policy.<br>
+--validate is useful when designing "goal" policies or beginning the
+initial policy design as it doesn't include the position=subject,object
+checks required for selinux or xsm.<br>
+<span style="font-family: Courier New; color: rgb(255, 0, 0);"><span
+ style="color: rgb(0, 0, 0);"><br>
+</span></span>
+<h2>Workflows Illustrated</h2>
+Lobster compilation generates shrimp output files from a Lobster policy
+file.&nbsp; The compiler will also generate parsing errors, symbion
+errors, and errors related to the output format chosen. Figure 1
+illustrates compilation of a lobster policy into an SELinux Shrimp
+Policy.&nbsp; Lobster can also geneate Xen compatible SELinux using the
+--xsm switch.&nbsp;&nbsp;&nbsp; <br>
+<br>
+&nbsp;<img style="width: 459px; height: 202px;"
+ alt="lobster compiler flow picture" src="compile.jpg">
+<span style="font-weight: bold;"><br>
+Figure 1: Lobster Compiler Workflow</span><br>
+<ul>
+  <li>Parses the policy file and identifies the first error in syntax</li>
+  <li>Analyzes the policy file for information flow problems and checks
+for problems with mismatch of 'type' property values.&nbsp; For SELinux
+compilation, all ports must have a 'type' property with values of
+'subject' and 'object'&nbsp; ports can only connect 'subject' to
+'object' ports. Same type connections will result in an error message<br>
+  </li>
+  <li>Runs Symbion assertions to verify that the information flows are
+correct. errors are reported to standard error..<br>
+  </li>
+  <li>Generate the Shrimp files.<br>
+  </li>
+</ul>
+Another option is top create a Lobster DSL which is a goal policy - a
+policy used to understand what is possible independent of a specific
+implementation.&nbsp; This policy can be checked for information flow
+using the compiler, visualized using lviz, and checked with Symbion
+checks using the lobster compiler in --validate mode.&nbsp; Later, a
+goal policy can be used to generate a realizable policy through the
+normal compilation steps but filling in more detail.&nbsp; Comparison
+of the goal policy against the specific implementation should be the
+final check in this process - potentially future Policy DSL tools will
+allow for automatic comparison and visualization of the differences.<br>
+<h2>Technical Papers<br>
+</h2>
+<ul>
+  <li><a href="Policy-DSL-HCSS-2009.pdf">Policy-DSL-2009</a> A summary
+of the Policy DSL work, covering shrimp, symbion and lobster.</li>
+  <li><a href="Policy-DSL-HCSS-2009-slides.pdf">Policy DSL Slides</a> -
+presentation providing overview of Policy DSL work<br>
+  </li>
+</ul>
+<span style="font-weight: bold;"></span><br>
+<br>
+</body>
+</html>

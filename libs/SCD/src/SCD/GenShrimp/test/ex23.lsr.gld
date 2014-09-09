@@ -1,0 +1,50 @@
+INPUT: ex23.lsr
+class Subject() {
+  port subj : { position = subject };
+}
+
+class Subject2() {
+  port subj2 : { position = subject };
+}
+
+class Object() {
+  port obj : { position = object };
+}
+
+class Object2() {
+  port obj2 : { position = object };
+}
+
+class Foo() {
+  port p;
+  domain a = Subject();
+  domain b = Subject2();
+  p -- a.subj;
+  p -- b.subj2;
+}
+
+class Bar() {
+  port q;
+  domain c = Object();
+  domain d = Object2();
+  q -- c.obj;
+  q -- d.obj2;
+}
+
+domain e = Foo();
+domain f = Bar();
+
+e.p -- f.q;
+OUTPUT: ex23.lsr
+module.te: ex23.lsr
+policy_module(module,1.0)
+type f_c_t;
+type f_d_t;
+type e_a_t;
+type e_b_t;
+allow e_b_t f_d_t:object2 obj2;
+allow e_b_t f_c_t:object obj;
+allow e_a_t f_d_t:object2 obj2;
+allow e_a_t f_c_t:object obj;
+module.fc: ex23.lsr
+

@@ -1,0 +1,47 @@
+one main process
+
+start two subprocesses
+
+main will read from one file, write to another file
+
+guard domain, read from one file, output to another file
+three processes internal
+subprocess to write 
+
+top process, read access to one file fr, and write access to another file fw
+two subprocess A, B
+top will write to internal input of A
+top will read from external output of B
+A will write A.out
+top will read A.out
+top will writ B.in
+B will read B.in
+B will write B.out
+top will read B.out
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+Lobster to Lobster pass
+
+class X () {
+  p = Process ()
+  f = domain File "a"
+  y = domain Y ();
+  p.active --> f.write
+  **** Need to algorithm to change this to p.active -> y.in;
+}
+
+class Y () {
+  p = process ();
+  f = domain File "a";
+  p.active <-- f.read;
+  *** Need algorithm to add port in; in --> f.write
+}
+
+Want to unify the two "a" to the innermost (latest) declaration.
+
+Algorithm:
+  Look for same file names
+  then smash together.

@@ -1,0 +1,14 @@
+type LogFile;
+
+class Log() {
+  port read : { type = LogFile, position = object };
+}
+
+class Proc() {
+  port p : { type = LogFile, position = subject };
+}
+
+domain x = Log();
+domain y = Proc();
+
+y.p -- x.read;

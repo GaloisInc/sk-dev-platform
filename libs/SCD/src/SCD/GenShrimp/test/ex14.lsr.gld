@@ -1,0 +1,27 @@
+INPUT: ex14.lsr
+class Process() {
+  port active : { position = subject };
+}
+
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class XClass() {
+  port p;
+  domain file = File("t.txt");
+  p -- file.getattr;
+}
+
+domain x = XClass();
+domain y = Process();
+y.active -- x.p;
+OUTPUT: ex14.lsr
+module.te: ex14.lsr
+policy_module(module,1.0)
+type x_file_t;
+type y_t;
+allow y_t x_file_t:file getattr;
+module.fc: ex14.lsr
+x_file_t "t.txt"
+

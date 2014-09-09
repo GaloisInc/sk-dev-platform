@@ -1,0 +1,74 @@
+# interface referencing the implementation
+# $1: domain given access
+interface(`a_a',`
+        gen_require(`
+          type a_file_t;
+        ')
+        allow $1 a_file_t:file read;
+')
+
+# template referencing the implementation
+# $1: domain_prefix
+template(`a_b',`
+        gen_require(`
+          type a_file_t;
+        ')
+        type $1_a_b_t;
+        allow $1_a_b_t a_file_t:file write;
+')
+
+# template not referencing anything
+# $1: domain_prefix
+template(`a_c',`
+        type $1_a_c_t;
+        type $1_a_c_file_t;
+        allow $1_a_c_t $1_a_c_file_t:file read;
+        allow $2 $1_a_c_file_t:file ioctl;
+')
+
+# interface referencing a template
+# $1: domain_prefix
+# $2: domain given access
+interface(`a_d',`
+        gen_require(`
+          type $1_a_c_t;
+        ')
+        allow $2 $1:process signal;
+')
+
+# interface referencing a template and the implementation
+# $1: domain_prefix
+# $2: domain given access
+interface(`a_e',`
+        gen_require(`
+          type $1_a_b_t;
+          type a_file_t;
+        ')
+        allow $2 $1_a_b_t:process signal;
+        allow $2 a_file_t:file read;
+')
+
+# interface referencing two templates, making connections between them
+# (not sure if this occurs in real life)
+# $1: domain_prefix 
+# $2: another domain_prefix
+# $3: a domain given access
+interface(`a_f',`
+        gen_require(`
+          type $1_a_b_t;
+          type $2_a_c_file_t;
+        ')
+        allow $1_a_b_t $2_a_c_file_t:file write;
+        allow $3 $2_a_c_file_t:file getattr;
+')
+
+# template calling other templates and interfaces
+# $1: domain_prefix
+# $2: domain given access
+template(`a_g',`
+        a_b($1_a_g_a)
+        a_c($1_a_g_b,$2)
+        a_d($1_a_g_b,$2)
+        a_f($1_a_g_a,$1_a_g_b,$2)
+')
+

@@ -1,0 +1,17 @@
+INPUT: err06.lsr
+class Poly() {
+  port p;
+}
+
+domain a = Poly();
+domain b = Poly();
+a -- b;
+OUTPUT: err06.lsr
+lobster: ERROR: couldn't interpret the Lobster policy file:
+in statement PortConnection [QualNameExpression (UnQual (Ident (Identifier (LIdent "a"))))] NeutralConnection [QualNameExpression (UnQual (Ident (Identifier (LIdent "b"))))]:
+bad object port: ObjectValue (ObjectId 0)
+module.te: err06.lsr
+
+module.fc: err06.lsr
+cat: module.fc: No such file or directory
+

@@ -1,0 +1,23 @@
+## <summary>policy for testapp</summary>
+
+########################################
+## <summary>
+##	Execute a domain transition to run testapp.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`testapp_domtrans',`
+	gen_require(`
+		type testapp_t, testapp_exec_t;
+	')
+
+	domain_auto_trans($1,testapp_exec_t,testapp_t)
+
+	allow testapp_t $1:fd use;
+	allow testapp_t $1:fifo_file rw_file_perms;
+	allow testapp_t $1:process sigchld;
+')

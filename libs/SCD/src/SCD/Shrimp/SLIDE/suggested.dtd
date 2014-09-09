@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT marker EMPTY>
+<!ELEMENT missing_param (#PCDATA)>
+<!ATTLIST marker
+	file CDATA #REQUIRED
+	name CDATA #REQUIRED
+	line CDATA #REQUIRED
+	start_char CDATA #REQUIRED
+>
+<!ELEMENT defined_at (marker)>
+<!ELEMENT warning ((marker+)|(marker,defined_at) | (missing_param,marker+) | (marker+,missing_param+,defined_at))>
+<!ATTLIST warning 
+	type CDATA #REQUIRED
+	macro_name CDATA #IMPLIED
+>
+<!ELEMENT shrimp (warning+)>

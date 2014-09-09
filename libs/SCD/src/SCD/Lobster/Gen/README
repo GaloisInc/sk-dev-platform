@@ -1,0 +1,7 @@
+
+A bit of scaffolding for a RefPol to Lobster translator
+
+  gen-lobster <path to refpol> <outDir>
+
+ (the <outDir> is actually ignored..)
+

@@ -1,0 +1,21 @@
+INPUT: ex06.lsr
+class XClass() {
+  port p : { position = subject };
+}
+
+class YClass() {
+  port q : { position = object };
+}
+
+domain x = XClass();
+domain y = YClass();
+
+x.p -- y.q;
+OUTPUT: ex06.lsr
+module.te: ex06.lsr
+policy_module(module,1.0)
+type y_t;
+type x_t;
+allow x_t y_t:yclass q;
+module.fc: ex06.lsr
+

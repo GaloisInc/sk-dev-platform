@@ -1,0 +1,1086 @@
+
+Programming Guide
+-----------------
+
+This document provides a guide to developing separation kernel-based
+systems using the development tools in this toolkit.  After reading this
+guide, you should be able to:
+
+  - design and create separation kernel XML configurations
+
+  - use the 'sklite' configuration tool bundled in this distribution
+
+  - write and compile cell programs which utilize shared memory
+    regions and the 'libsk' channel API
+
+  - combine your compiled cell programs and the base content provided
+    in this distribution to create a bootable Linux system which runs
+    your programs
+
+Before proceeding, be sure you have run the build process (build.sh) on
+the source distribution or have otherwise acquired a binary distribution
+including a full Buildroot build and the sklite tools.
+
+Development Workflow
+--------------------
+
+The workflow for developing with this toolkit is:
+
+ 1) Determine the resource usage and communication requirements of
+    your separation kernel application;
+
+ 2) Write an XML configuration capturing those requirements;
+
+ 3) Use the 'sklite' tools to convert the configuration into C stub
+    code;
+
+ 4) Write cell programs using the generated C stub code, or provide
+    pre-compiled binary cell programs;
+
+ 5) Use the 'sklite' tools to create a boot script from your XML
+    configuration;
+
+ 6) Use the 'sklite-sepolicy' tool to create an SELinux policy file for
+    your XML configuration.
+
+ 7) Merge your cell programs, scripts, and policy into the base Linux
+    image in this distribution to create bootable image.
+
+Writing the Configuration
+-------------------------
+
+The first step is to determine the programs that will make up the
+system, how they will communicate with each other, and whether they
+will need access to external devices or shared memory.  Once those
+requirements are understood, we can write an XML configuration to
+capture them.  In the following sections we will see details on how
+to write such a configuration.
+
+Choosing a Cell Execution Method
+--------------------------------
+
+There are two ways to run programs in the development platform:
+
+ 1) Generate stub code using the 'sklite-drivers' tool.  This method
+    requires you to provide a C implementation of the main body of
+    your cell program.  Use this method if you have the source to the
+    component you need to run and can wrap it in a main()
+    implementation to run it.
+
+ 2) Provide a pre-built x86-64 binary.  This method requires you to
+    know the memory layout required by the binary, including the start
+    addresses of shared memory regions and the entry point address of
+    the binary.  Use this method if you have a third-party component
+    you need to run alongside hand-written cell programs.
+
+Most of this document pertains to the C library provided in this
+distribution and how to use it to write cell programs by hand.  See
+the section entitled "Running Pre-Built Binaries" for details on
+running those.
+
+Generating Stubs
+----------------
+
+Once the XML configuration has been written, we can use it to generate
+C helper code that we will use to set up access to resources mentioned
+in the configuration.  We do this regardless of the cell execution
+methods mentioned above, and the generated source performs different
+functions depending on the method used.  The program 'sklite-drivers'
+included in the distribution will take an XML configuration as input
+and produce, for each cell described in the layout, C source files
+which will set up pointers to the requested shared memory regions,
+channels, etc.
+
+Consider the following layout configuration:
+
+  <layout bandwidth="95">
+    <segment name="mem" size="40960" />
+    <cell name="cell1" program="cell1" user="root" runtime="95000"
+          period="100000">
+      <use-segment name="mem" alias="buffer" privileges="rw" />
+    </cell>
+  </layout>
+
+We can run sklite-drivers on the configuration as follows to generate
+driver stub code in the current directory:
+
+  $ sklite-drivers config.xml .
+
+This command will generate two files:
+
+  cell1_driver.h
+  cell1_driver.c
+
+The generated source will provide functions for each shared memory
+segment mentioned in the <cell> tag as follows, with <name> replaced
+with the value of the "name" attribute of the <cell> tag in the
+configuration:
+
+  size_t region_<name>_size()
+
+    Returns the size, in bytes, of the specified shared memory region.
+
+  int region_<name>_read(void * dest, size_t size, off_t offset)
+
+    Reads 'size' bytes from offset 'offset' into the buffer 'dest'
+    from the shared memory region.
+
+  int region_<name>_write(void * src, size_t size, off_t offset)
+
+    Writes 'size' bytes to offset 'offset' from the buffer 'src' into
+    the shared memory region.
+
+  void * region_<name>_base()
+
+    Returns the base memory address of the shared memory region.
+
+  region_<name>_mem()
+
+    A 'struct mem' structure containing the base address pointer and
+    region size, used for libsk functions requiring a 'mem' structure.
+
+If a cell is running a pre-built binary (see "Running Pre-Built Binaries"
+for details), the generated driver code will take care of loading and
+mapping the binary image.
+
+XML Configuration Syntax
+------------------------
+
+The top-level element of the configuration is the 'layout' element:
+
+  <layout bandwidth="...">
+    ...
+  </layout>
+
+The 'bandwidth' attribute determines the runtime behavior of the
+system as a whole.  The value of the 'bandwidth' attribute must be an
+integer no larger than 100.  It indicates the percentage of total
+available CPU bandwidth which will be reserved for the separation
+kernel applications.  Below, we will configure each cell in the
+application to use portions of this bandwidth.
+
+The next element is the 'cell' element: this element represents a
+program running in the separation kernel environment.
+
+  <layout bandwidth="95">
+    <cell name="cell1" prog="prog1" runtime="95000"
+          period="100000" user="root">
+      <args>
+        <arg>one</arg>
+        <arg>two</arg>
+      </args>
+    </cell>
+  </layout>
+
+The above cell indicates that the program "prog1" should be run for
+95,000 microseconds every 100,000 microseconds (i.e., using 95% of the
+system bandwidth, the amount declared in the layout 'bandwidth'
+attribute).  The 'user' attribute indicates the UNIX account which
+should run the cell process.  The 'args' element specifies positional
+command-line arguments which should be passed to the cell's program
+upon execution.  Those arguments will be made available to the
+cell_main() function.
+
+Next, we can set up regions of shared memory and declare which cells
+have access to them.  To do this, we add 'segment' elements at the top
+level:
+
+  <layout ...>
+    <segment name="seg1" size="1024" />
+  </layout>
+
+The above configuration declares a memory segment of 1,024 bytes
+called 'seg1'.  As written, this configuration will not provide access
+to that memory for any cells; we need to add more configuration to fix
+that:
+
+  <layout ...>
+    <segment name="seg1" size="1024" />
+
+    <cell name="cell1" ...>
+      <use-segment name="seg1" alias="buffer" privileges="ro" />
+    </cell>
+  </layout>
+
+The above configuration allows cell 'cell1' to access the memory
+segment 'seg1' in read-only mode ("ro" privilege).  Furthermore, it is
+given the name 'buffer' in 'cell1'; this allows us to give the shared
+memory segment a meaningful name on a per-cell basis.
+
+Shared memory segments in the configuration result in disk files being
+created when the system initializes; those files are mmap'd into each
+cell process and pointers to the mmap'd memory are set up and given
+names you choose in the configuration.
+
+While shared memory segments are a way to get data from one cell to
+another, they provide a low-level interface that may not be
+appropriate for most applications.  The configuration provides a
+higher-level mechanism, unidirectional communication channels, which
+can be used instead.  Under the hood these use shared memory segments
+but hide the details of setting up and configuring the memory needed
+and provide a high-level message-passing interface.
+
+To declare a channel:
+
+  <layout ...>
+    <channel name="chan1" from="cell1" to="cell2"
+    	     msgsize="1024" slots="4" overwrite="no" />
+
+    <cell name="cell1" .../>
+    <cell name="cell2" .../>
+  </layout>
+
+The channel declaration above creates a unidirectional channel between
+the cells named 'cell1' and 'cell2'.  'cell1' will have write
+permission on the channel (but not read) and 'cell2' will have read
+permission on the channel (but not write).  The messages on the
+channel will be 1,024 bytes in size and the channel buffer will have a
+4-message capacity before it becomes full.
+
+The last attribute, 'overwrite', indicates whether the channel writer
+('cell1' in this case) will have the ability to "overwrite" messages
+in the channel when it attempts to send a message on a full channel.
+The attribute defaults to "no".  Valid values are "0", "1", "no",
+"yes", "false", and "true" (case insensitive).
+
+In some applications overwriting may be desired, such as lossy network
+tranmissions or video streams, where blocking on a full channel is not
+acceptable.  In other applications a full channel may prohibit
+overwriting to avoid data loss.
+
+The presence of a 'channel' element in the configuration results in
+channel data structures being generated in the driver code for each
+cell involved.  In the example above, the driver code for 'cell1' will
+have the following variable available:
+
+  write_channel_p chan1;
+
+Meanwhile, 'cell2' will have the "read end" of the channel:
+
+  read_channel_p chan1;
+
+Understanding Scheduling Bandwidth
+----------------------------------
+
+The Linux kernel used by this system provides an implementation of the
+Earliest Deadline First (EDF) scheduler.  This scheduler is
+well-suited for real-time applications and has some advantages over
+the built-in real-time scheduler in the kernel.  The EDF scheduler
+provides the guarantee that if a set of processes have been allocated
+at most 100% of the available CPU bandwidth, then they will be
+schedulable according to their scheduling parameters.  These
+parameters are:
+
+  * process runtime - the amount of time that a process must run
+    periodically.
+
+  * period - the time interval consecutive runtimes.  If a process
+    with period P begins running at time T, then it will be scheduled
+    again sometime between time T+P and T+(2P).
+
+  * deadline - the time by which the process's runtime *must*
+    complete.  The deadlines of a set of processes dictate which one
+    gets scheduled next: the one with the "earliest" deadline is
+    scheduled first to ensure that its runtime requirement is
+    satisfied by its deadline.  At every scheduling quantum this check
+    determines who gets scheduled next.
+
+As described in the examples above, the configuration file for this
+system requires the user to specify the period and runtime values for
+each cell.  It sets the deadline to be equal to the period.  The way
+to compute the "bandwidth" used by a given cell is
+
+               runtime
+  bandwidth = ---------
+               period
+
+and the system will be able to schedule all of the cells if and only
+if the sum of their bandwidths does not exceed 1.
+
+The configuration also requires the user to specify a global bandwidth
+constraint in the form of a percentage.  This value determines how
+much total CPU bandwidth is reserved for deadline-scheduled tasks;
+setting this to be less than 100% means some non-deadline processes on
+the system will still be able to function.  We recommend setting this
+value to, say, 95% at most.
+
+The global bandwidth setting will affect the choices for cell runtime
+and period values.  For example:
+
+  bandwidth = 90%
+
+  "cell1" runtime =  90000 (us)
+          period  = 100000 (us)
+
+In the example above, the only cell in the configuration has a
+bandwidth of
+                90000
+  bandwidth = -------- = 90%
+               100000
+
+so we have used all of the reserved bandwidth.  Another valid
+configuration would be:
+
+  bandwidth = 90%
+
+  "cell1" runtime =  30000 (us)
+          period  = 100000 (us)
+
+  "cell2" runtime =  30000 (us)
+          period  =  50000 (us)
+
+This yields
+
+  "cell1" bandwidth = 30%
+  "cell2" bandwidth = 60%
+
+which does not exceed 90%.  But, notice that the period for "cell2" is
+much smaller; "cell2" will run twice as often -- 30,000 us every
+50,000 us -- whereas "cell1" will run 30,000 us every 100,000 us.
+
+Writing Cell Programs
+---------------------
+
+The generated sources provide a main() implementation and a prototype
+for a function cell_main() which you must implement.  The provided
+main() function takes care of setting up the shared memory regions
+corresponding to the functions mentioned above and ultimately passes
+control to cell_main().
+
+The prototype of cell_main() is:
+
+  int cell_main(int argc, char **argv);
+
+In cell_main() you'll put the top-level logic of your program, which
+may include calls to the generated shared memory functions described
+above.  Your program cannot block in the traditional sense, since it
+will be running in a separation kernel environment where busy-waiting
+is the only method of waiting.  At present, this toolkit provides a C
+library, 'libsk', with some higher-level functionality beyond shared
+memory access.  This functionality is detailed in the following
+sections.
+
+The Channel API
+---------------
+
+The channel API in libsk provides a communication channel abstraction
+on top of the shared memory functionality.  Channels are
+unidirectional; to provide a bidirectional channel, configure opposing
+unidirectional channels.  Each channel uses three regions of shared
+memory: the message buffer itself, which contains sent/received
+messages, the reader's metadata, and the writer's metadata.  The
+metadata buffers are read-only for opposing ends and are used to
+determine when a channel is full or empty.
+
+To create a channel, we declare it in the XML configuration, generate
+stubs as described above, and use the resulting channel pointer to
+send or receive messages.  In the following example, we'll assume this
+configuration:
+
+  <layout ...>
+    <channel name="chan" from="cell1" to="cell2"
+    	     msgsize="1024" slots="4" />
+
+    <cell name="cell1" .../>
+    <cell name="cell2" .../>
+  </layout>
+
+This configuration provides a channel originating from 'cell1'.  Its
+driver code will contain a 'write_channel_p' variable named 'chan'
+which we can use to send messages on the channel.  No setup is
+necessary.  Here is an example 'cell1' implementation:
+
+  #include "cell1_driver.h"
+  #include <channels.h>
+
+  int cell_main(int argc, char **argv) {
+    unsigned char msg[1024];
+    int status;
+
+    status = channel_send(chan, msg);
+  }
+
+The receiving end of such the channel, defined as a 'read_channel_p'
+in 'cell2', can be used as follows:
+
+  #include "cell2_driver.h"
+  #include <channels.h>
+
+  int cell_main(int argc, char **argv) {
+    unsigned char msg[1024];
+    int status;
+
+    status = channel_recv(chan, msg);
+  }
+
+The return values of the channel_* functions, defined in channels.h,
+are as follows:
+
+  CHANNEL_OK: the operation succeeded.
+  CHANNEL_INVALID: an invalid channel pointer (NULL) was given.
+
+Both of these functions will effectively "block" indefinitely until
+the channel has room to send (in the send case) or has a message
+waiting (in the receive case).  If you want to merely attempt a send
+or receive without waiting for the operations to complete, libsk
+provides two other functions to do this:
+
+  int channel_try_send(write_channel_p chan, void *buf);
+  int channel_try_recv(read_channel_p chan, void *buf);
+
+These functions have the same return values as the blocking versions
+but may also return one of
+
+  CHANNEL_FULL: the write channel given was full so the message was
+    not sent.
+
+  CHANNEL_EMPTY: the read channel given was empty so no message was
+    received into the buffer.
+
+The Network Device API
+----------------------
+
+libsk provides functionality for sending and receiving UDP packets
+over physical network interfaces.  This is accomplished by bridging a
+UDP network stream to a shared memory channel and by providing a
+network message structure for dealing with network messages.
+
+Two implementations of this networking functionality are provided: a
+UNIX-based implementation which uses UNIX sockets and the kernel's
+network stack, and another implementation which uses the "LwIP"
+(Lightweight IP) userspace/RTOS network stack.
+
+The UNIX Network Driver
+-----------------------
+
+To create a cell which bridges a network device to a channel, define a
+channel (unidirectional or bidirectional) and associate it with a
+network driver cell.  The channel MAY allow overwriting.
+
+  <layout bandwidth="100">
+    <channel name="chan" from="net1" to="net2" msgsize="65536"
+    	     slots="16" overwrite="yes" />
+
+    <cell name="net1" program="net1" user="root" runtime="50000"
+          period="100000">
+      <args>
+        <arg value="127.0.0.1"/>
+        <arg value="12345"/>
+      </args>
+    </cell>
+
+    <cell name="net2" program="net2" user="root" runtime="50000"
+          period="100000">
+      <args>
+        <arg value="127.0.0.1"/>
+        <arg value="12346"/>
+      </args>
+    </cell>
+  </layout>
+
+The above configuration declares two cells:
+
+  * 'cell1', which will listen on 127.0.0.1:12345 for UDP packets and
+    send them over a channel to 'cell2';
+
+  * 'cell2', which will listen on a channel for UDP packets and send
+    them to 127.0.0.1:12346.
+
+Given the above configuration, we can implement the cells as follows
+using the libsk network device API.  Here is 'cell1':
+
+  int cell_main(int argc, char **argv) {
+    if (argc != 3)
+      return 1;
+
+    return run_netdev_unix(NULL, 0, NULL, argv[1], argv[2], chan);
+  }
+
+The 'run_netdev_unix' function is defined as follows:
+
+  int run_netdev_unix(const char *dest_hostname, const char *dest_port,
+                      read_channel_p send_src,
+                      const char *listen_hostname, const char *listen_port,
+                      write_channel_p recv_dest);
+
+It will set up the appropriate sockets to listen on a network device
+and/or channel and proxy traffic accordingly.  The dest and source
+parameters are optional, but at least one set must be specified.
+Setting dest_hostname, dest_port, and send_src to NULL will result in
+a network device cell which only listens on a UDP port and sends to a
+channel.
+
+Notice that the "destination" hostname and port are associated with a
+read channel; messages are read from that channel and sent to the
+specified hostname and UDP port.
+
+The cell 'cell2' may be implemented as follows:
+
+  int cell_main(int argc, char **argv) {
+    if (argc != 3)
+      return 1;
+
+    return run_netdev_unix(argv[1], argv[2], chan, NULL, 0, NULL);
+  }
+
+In this case run_netdev_unix operates in forwarding-only mode and does
+not listen on a UDP port or send messages to any channels.
+
+The above example is simple in that it doesn't do anything interesting
+with the network traffic; it just sends traffic from one network port
+to another.  To do something a little more interesting, we can insert
+a cell in between the network cells as follows (some details elided):
+
+  <layout ...>
+    <channel name="to_pep" from="net1" to="pep" msgsize="65528"
+    	     slots="16" overwrite="yes" />
+
+    <channel name="from_pep" from="pep" to="net2" msgsize="65528"
+    	     slots="16" overwrite="yes" />
+
+    <cell name="pep"  program="pep"  user="root" .../>
+    <cell name="net1" program="net1" user="root" .../>
+    <cell name="net2" program="net2" user="root" .../>
+  </layout>
+
+In the above modified configuration, we've inserted a 'pep' (for
+Policy Enforcement Point) cell in between the two network cells.  It
+might be implemented as follows:
+
+  int safe(unsigned char *buf) {
+    return (strncasecmp((char *) buf, "hello", 5) == 0);
+  }
+
+  int cell_main(int argc, char **argv) {
+    netmsg_p msg;
+    netdev_p nd;
+    int status;
+
+    msg = malloc(sizeof(struct netmsg));
+    memset(msg, 0, sizeof(struct netmsg));
+    nd = netdev_setup(to_pep, from_pep);
+
+    if (nd == NULL)
+      return 1;
+
+    while (1) {
+      if ((status = netdev_recv(nd, msg)))
+	return 1;
+
+      if (safe(msg->payload))
+        if ((status = netdev_send(nd, msg)))
+	  return 1;
+    }
+
+    return 0;
+  }
+
+This cell receives a message from the 'net1' cell, processes it, and
+decides whether to send it on to the 'cell2' cell.
+
+The network message structure, struct netmsg, is defined in network.h.
+The network client API, including netdev_setup, netdev_send, and
+netdev_recv, are also documented in network_client.h.  The server,
+run_netdev_unix, is defined in network_server_unix.h.
+
+The LwIP-Based Network Driver
+-----------------------------
+
+To use the LwIP network driver, define a channel (unidirectional or
+bidirectional) and associate it with a network driver cell.  The
+channel MAY allow overwriting.
+
+  <layout ...>
+    <channel name="chan" from="net1" to="net2" msgsize="65528"
+    	     slots="16" overwrite="yes" />
+
+    <cell name="net1" program="net1" user="root" ...>
+      <args>
+        <arg value="10.0.0.2"/>
+        <arg value="10.0.0.1"/>
+        <arg value="255.255.255.0"/>
+        <arg value="12345"/>
+      </args>
+    </cell>
+
+    <cell name="net2" program="net2" user="root" ...>
+      <args>
+        <arg value="10.1.0.2"/>
+        <arg value="10.1.0.1"/>
+        <arg value="255.255.255.0"/>
+        <arg value="10.2.0.1"/>
+        <arg value="12346"/>
+      </args>
+    </cell>
+  </layout>
+
+The above configuration declares two cells:
+
+  * 'cell1', which will create an interface with IP 10.0.0.2, gateway
+    10.0.0.1, and netmask 255.255.255.0 and will listen on port 12345
+    for UDP packets and send them over a channel to 'cell2';
+
+  * 'cell2', which will listen on a channel for UDP packets and send
+    them to 10.2.0.1, port 12346, via an interface with IP 10.1.0.2,
+    gateway 10.1.0.1, and netmask 255.255.255.0.
+
+Given the above configuration, we can implement the cells as follows
+using the libsk network device API.  Here is 'cell1':
+
+  int cell_main(int argc, char **argv) {
+    unsigned short port;
+
+    if (sscanf(argv[4], "%hd", &port) != 1)
+	return 1;
+
+    printf("Listening on port: %hd\n", port);
+
+    return run_netdev_lwip(argv[1], argv[2], argv[3], port,
+			   to_pep, NULL, 0, NULL);
+  }
+
+The 'run_netdev_lwip' function is defined as follows:
+
+int run_netdev_lwip(const char *if_ip, const char *if_gw, const char *if_netmask,
+		    const unsigned short listen_port, write_channel_p recv_dest,
+		    const char *dest_ip, const unsigned short dest_port,
+		    read_channel_p send_src);
+
+It will set initialize the LwIP network stack, set up an interface
+with the specified IP, netmask, and gateway, and:
+
+ * listen on a port UDP for messages to deposit into the specified
+   "recv_dest" channel
+
+ * transmit messages from the "send_src" channel to the specified
+   destination host and port
+
+Setting dest_ip, dest_port, and send_src to NULL will result in a
+network device cell which only listens; conversely, specifying the
+listen port as zero and the recv_dest as NULL will disable listening
+behavior.  At least one set of parameters must be specified.
+
+The cell 'cell2' may be implemented as follows:
+
+  int cell_main(int argc, char **argv) {
+    unsigned short port;
+
+    if (argc != 6)
+	return 1;
+
+    if (sscanf(argv[5], "%hd", &port) != 1)
+	return 1;
+
+    return run_netdev_lwip(argv[1], argv[2], argv[3],
+    			   0, NULL,
+			   argv[4], port, from_pep);
+  }
+
+In this case run_netdev_lwip operates in forwarding-only mode and does
+not listen on a UDP port or send messages to any channels.
+
+The above example is simple in that it doesn't do anything interesting
+with the network traffic; it just sends traffic from one network port
+to another.  To do something a little more interesting, we could
+insert a cell in between the network cells as described in the UNIX
+network driver section above.
+
+As with the UNIX network example, the network message structure,
+struct netmsg, is defined in network.h.  The network client API,
+including netdev_setup, netdev_send, and netdev_recv, are also
+documented in network_client.h.  The server, run_netdev_lwip, is
+defined in network_server_lwip.h.
+
+libsk Disk Drivers
+------------------
+
+libsk provides functionality for accessing virtual disk devices hosted
+by regular disk files.  By using the libsk disk feature, your cells
+can get basic I/O access to disk storage hosted by another cell.
+
+libsk provides two different disk drivers: a "synchronous" disk driver
+which uses read()/write() system calls to operate on a standard disk
+file in a synchronous manner, and an "asynchronous" disk driver which
+uses the Linux kernel's asynchronous I/O feature (and the "libaio"
+library) to provide an asynchronous interface.
+
+The Synchronous Disk API
+------------------------
+
+To use the synchronous disk API, we start by creating a "driver" cell
+which will service I/O requests.  This cell needs an input channel and
+an output channel will call the disk "server" function, 'run_disk':
+
+  // Include the synchronous disk driver API
+  #include <disk.h>
+
+  int cell_main(int argc, char **argv) {
+      return run_disk(chan_in, chan_out, "disk.dat");
+  }
+
+The prototype of run_disk is:
+
+  int run_disk(read_channel_p chan_in, write_channel_p chan_out,
+               const char *disk_file_path);
+
+The above example assumes an XML configuration with a cell with access
+to channels named 'chan_in' and 'chan_out'.  The channels SHOULD NOT
+permit overwriting to avoid data loss.  Note that run_disk() will not
+create the disk file but requires that the disk file already exists.
+
+The run_disk function takes an input channel, an output channel, and
+the name of the disk file to serve.  It then enters into a loop in
+which it waits for I/O requests on the input channel and sends I/O
+responses on the output channel.  There are two main types of I/O
+request:
+
+  - block read/write: these requests indicate that a block or set of
+    blocks should be read from (or written to) the disk at a specific
+    sector offset.
+
+  - device size query: these requests indicate that the size of the
+    disk, in bytes, should be transmitted in the response.
+
+The types of I/O requests are defined in disk.h in the struct
+disk_message.  The field 'type' of the struct determines the message
+type and must be either DISK_MSG_IO_REQUEST or DISK_MSG_GET_SIZE.  The
+struct contains a union of message fields, 'body', which has either
+its 'io_request' or 'device_size' fields set for block and size
+request messages, respectively.
+
+In the following example, a client cell makes a request to a disk cell
+to get its size.  We assume the cell has channels 'to_disk' and
+'from_disk' defined in the XML configuration.
+
+  struct disk_message msg;
+  msg.type = DISK_MSG_GET_SIZE;
+
+  channel_send(to_disk, &msg);
+  channel_recv(from_disk, &msg);
+  printf("Device size is: %ld\n", msg.body.device_size);
+
+In the following example, a client cell makes a request to write some
+data to the disk.  We use SECTOR_SIZE which is defined in disk.h:
+
+  struct disk_message msg;
+  msg.type = DISK_MSG_IO_REQUEST;
+  msg.body.io_request.type = DISK_IO_REQUEST_WRITE;
+  msg.body.io_request.num_sectors = 2;
+  msg.body.io_request.start_sector = some_sector;
+  // Copy some data to be written into the buffer:
+  memcpy(msg.body.io_request.payload, some_buffer, 2 * SECTOR_SIZE);
+
+  channel_send(to_disk, &msg);
+  // Always receive the reply to remove it from the channel, and to
+  // check that the operation succeeded.
+  channel_recv(from_disk, &msg);
+
+  if (msg.status != 0) {
+    printf("Disk write failed\n");
+  }
+
+In this example, a client cell makes a request to read some data from
+the disk:
+
+  struct disk_message msg;
+  msg.type = DISK_MSG_IO_REQUEST;
+  msg.body.io_request.type = DISK_IO_REQUEST_READ;
+  msg.body.io_request.num_sectors = 2;
+  msg.body.io_request.start_sector = some_sector;
+
+  channel_send(to_disk, &msg);
+  channel_recv(from_disk, &msg);
+
+  if (msg.status == 0) {
+    // The read succeeded, so msg.body.io_request.payload will contain
+    // 2 sectors' worth of data for us to use.
+  }
+
+The Asynchronous Disk API
+-------------------------
+
+To use the asynchronous disk API, we start, similarly to the
+synchronous API, by creating a "driver" cell which will service I/O
+requests.  This cell needs an input channel and an output channel will
+call the disk "server" function, 'run_disk_async':
+
+  // Include the asynchronous disk driver API
+  #include <disk-aio.h>
+
+  int cell_main(int argc, char **argv) {
+      return run_disk_async(chan_in, chan_out, "disk.dat");
+  }
+
+The prototype of run_disk_async is:
+
+  int run_disk_async(read_channel_p chan_in, write_channel_p chan_out,
+               const char *disk_file_path);
+
+The above example assumes an XML configuration with a cell with access
+to channels named 'chan_in' and 'chan_out'.  The channels SHOULD NOT
+permit overwriting to avoid data loss.  Note that run_disk_async()
+will not create the disk file but requires that the disk file already
+exists.
+
+The run_disk_async function takes an input channel, an output channel,
+and the name of the disk file to serve.  It then enters into a loop in
+which it waits for I/O requests on the input channel and sends I/O
+responses on the output channel.  There are two main types of I/O
+request:
+
+  - block read/write: these requests indicate that a block or set of
+    blocks should be read from (or written to) the disk at a specific
+    sector offset.
+
+  - device size query: these requests indicate that the size of the
+    disk, in bytes, should be transmitted in the response.
+
+The types of I/O requests are defined in disk-aio.h in the struct
+disk_msg.  The asynchronous disk client works by issuing requests and
+registering callbacks to be run when responses are ready.
+
+The disk client API, also defined in disk-aio.h, is as follows:
+
+  - disk_client_init: given a pair of channels to an asynchronous disk
+    server cell, initialize a disk client struct.
+
+  - disk_client_read: issue a disk read and provide error and success
+    callbacks.
+
+  - disk_client_write: issue a disk write and provide error and
+    success callbacks.
+
+  - disk_client_get_size: issue a disk size request and provide error
+    and success callbacks.
+
+  - disk_client_poll: poll to check if any pending server responses
+    need to be processed.
+
+The general structure of an asynchronous disk client program is:
+
+  - call disk_client_init to set up a "connection" to a disk driver
+    cell;
+
+  - call disk_client_get_size to issue a device size request; have a
+    callback set the size in a known location;
+
+  - repeatedly call disk_client_poll to wait for the response,
+    checking the size variable set by the callback;
+
+  - begin issuing reads and writes, periodically calling
+    disk_client_poll to handle responses.
+
+You can see a complete example of an asynchronous disk client
+implementation in the "demo-async" directory; see cells "cell1.c" and
+"cell2.c" for client code.
+
+Compiling the Cell Programs
+---------------------------
+
+When compiling the cell programs for the base filesystem included in
+this toolkit, you'll need to use the cross compilation toolchain
+available in
+
+  dev/os/build/buildroot-2012.02/output/host/usr/bin
+
+You can see a complete example of using the toolchain in
+
+  dev/user/demo/Makefile
+
+In particular, you'll need to use the cross compilation toolchain and
+link against 'libsk', which is located in
+
+  dev/user/libsk
+
+and should be compiled with
+
+  make cross
+
+Running Pre-Built Binaries
+--------------------------
+
+If you need to run pre-built binaries alongside your hand-written cell
+programs, you'll need to:
+
+ 1) Add a "cell" element to your XML configuration with the details
+    necessary to get the binary loaded correctly;
+
+ 2) Add "use-segment" elements to the binary cell configuration to map
+    shared memory to the correct addresses assumed by the binary.
+
+You'll still run 'sklite-drivers' to generate sources for cells run
+this way, but the generated source will not call cell_main() as in the
+hand- written case.  Instead, the generated driver code will still
+take care of mapping shared memory (now to specific addresses), but it
+will also load and map the binary image of the program to the address
+you specify in the configuration.  Lastly, it will jump to that
+address to begin execution.  Here is an example configuration:
+
+  <layout bandwidth="90">
+    <segment name="mem" size="1048576" />
+    <cell name="prog" program="prog" binary="prog_img.bin" user="root"
+          runtime="90000" period="100000" entryAddr="0x200000"
+          size="0xD6E000">
+      <use-segment name="mem" alias="the_memory" privileges="ro"
+                   mapto="0xa0000000"/>
+    </cell>
+  </layout>
+
+The above configuration will result in the following:
+
+'sklite-drivers' will generate stub code, "prog_driver.[ch]", for a
+program named "prog", which you must compile.  When that program runs,
+it will mmap() the file "prog_img.bin" into memory at the address
+"0x2000000".  The memory region used will have size "0xD6E000" and
+will be initialized to zero before the binary is loaded.  Lastly, the
+shared memory region "mem" will be made available to "prog_img.bin" at
+the address "0xa0000000".
+
+The difference between this kind of configuration and those discussed
+elsewhere in this document is that no "cell_main()" object code needs
+to be provided to compile the generated stub code, and the three cell
+attributes "binary", "entryAddr", and "size" must be provided all
+together if the cell is to run a pre-built binary.  In addition, to
+ensure that the binary can access shared memory, the desired mapping
+addresses must be provided in the "use-segment" elements.
+
+Note that in some cases the entry point address of the binary you need
+to run may conflict with the default memory layout produced by GCC for
+the wrapper program.  In such cases it is necessary to modify the
+start address of the ELF binary generated by GCC so as to create a
+memory layout with room for a memory mapping to map the raw pre-built
+binary.  It's possible to have total control over this with linker
+scripts, but here we just detail a simpler approach that works in some
+cases:
+
+  LDFLAGS=-Wl,-Ttext-segment=0x1000000
+
+The above Makefile LDFLAGS assignment will cause the linker to emit a
+binary with a text segment mapped to 0x1000000; you may need to use a
+different address to create a memory layout that works for you.  To
+determine this, consult the ELF header of the wrapper binary as well
+as the contents of /proc/<pid>/maps at runtime to determine why memory
+mappings are failing.
+
+Using the Checksyms Tool
+------------------------
+
+This toolkit provides a tool called 'checksyms' which is responsible
+for ensuring that the separation kernel programs use only the C
+library functionality that they are permitted to use to constrain them
+to what a separation kernel would provide.  The tool works by
+inspecting the symbols used by the program and determining which of
+them are present in a whitelist.  We can use this tool to check that
+only particular system calls are present in the program, or that
+certain library calls are present.
+
+The tool is located in:
+
+  dev/user/checksyms/
+
+We run the tool against a program and the target C library as follows:
+
+  python checksyms.py .../libc.so.0 libc_whitelist <program>
+
+The target C library mentioned in the previous step is located in the
+toolchain directory at
+
+  dev/os/build/buildroot-2012.02/output/host/usr/x86_64-unknown-linux-uclibc/sysroot/lib
+
+The tool will exit with a status of zero if no disallowed symbols are
+referenced by <program>.  Otherwise it will emit a list of disallowed
+symbols which were found in the program and then exit with a non-zero
+status.
+
+For a complete example of the checksyms tool in practice, see the
+Makefile for the demonstration programs at
+
+  dev/user/demo/Makefile
+
+Generating a Boot Script
+------------------------
+
+The scheduling and resource parameters in the XML configuration are
+set up by a boot script.  The boot script takes care of these setup
+steps and starts the cells.  We generate this boot script by running
+'sklite-boot':
+
+  $ sklite-boot config.xml .
+
+This command will create a 'boot.sh' script in the current directory
+as well as a 'host-boot.sh' script used for booting the environment on
+the host without setting up scheduling paramters.  The latter can be
+used for testing before booting the actual deadline-enabled system.
+
+Generating an SELinux policy module
+-----------------------------------
+
+The SELinux policy and file contexts are generated from the XML
+configuration to enforce that access to both external resources
+and shared memory resources are only provided to the necessary
+cells.
+
+  $ sklite-sepolicy config.xml policy/
+
+This command will create a new SELinux domain for each cell and
+a new file type for each cell executable and for each shared memory
+file. Each domain will be restricted to reading/writing to shared
+memory files as specified in the configuration.
+
+Additional interfaces can be specified in the XML to enable cells
+to interface with external components as needed.
+
+The SELinux bootscript will load the application specific policy
+stored in "/etc/selinux/extension" .
+
+Creating a Bootable Image
+-------------------------
+
+For this step you'll need to have a disk device available to store the
+filesystem image.  We'll refer to this as "DEVICE" in the steps which
+follow.  These steps require two programs:
+
+ * "fakeroot" - Available in most Linux distributions.
+ * "genext2fs" - http://genext2fs.sourceforge.net/
+
+  1. Obtain a copy of the base Linux filesystem from this toolkit:
+
+     cp -R .../dev/os/build/buildroot-2012.02/output/target .
+
+  2. Install the cell binaries, boot script, and SELinux policy modules
+     into the new path:
+
+     cp -R sk target/
+     mkdir -p target/etc/selinux/extension
+     cp -r policy target/etc/selinux/extension
+
+  3. Now create a filesystem image from the filesystem directory:
+
+     fakeroot -- genext2fs -d target/ -N 10000 -b 250000 filesystem.img
+
+Now we install the kernel and filesystem images and GRUB configuration
+to make the system bootable:
+
+  sudo cp .../dev/os/build/vmlinuz-deadline /boot/
+  sudo dd if=filesystem.img of=DEVICE
+
+The following GRUB configuration, appended to /etc/grub/grub.conf,
+should suffice:
+
+  title Separation Kernel Platform
+    root (hd0,0)
+    kernel /vmlinuz-deadline ramdisk_size=131072 root=DEVICE rw
+
+Booting the System
+------------------
+
+Once you've installed the images and GRUB configuration as described
+above, reboot the system and select the Separation Kernel Platform
+GRUB menu entry.  The system will proceed to boot and provide a login
+prompt; just prior to providing a login prompt, it will start the
+programs in the separation kernel application.  Output from the
+startup process programs should be evident on the console, and output
+from the programs can be found in log files in /sk/.
+
+If you need to log in to the system to debug, log in with the username
+'default' (no password).

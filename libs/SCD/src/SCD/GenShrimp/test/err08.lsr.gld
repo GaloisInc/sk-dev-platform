@@ -1,0 +1,17 @@
+INPUT: err08.lsr
+class Foo() {
+  port p : { position = object } ;
+}
+
+port q : { position = subject, position = subject } ;
+
+domain a = Foo();
+
+q -- a.p;
+OUTPUT: err08.lsr
+lobster: ERROR:multiple definitions of position
+module.te: err08.lsr
+
+module.fc: err08.lsr
+cat: module.fc: No such file or directory
+

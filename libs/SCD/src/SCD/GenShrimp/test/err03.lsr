@@ -1,0 +1,17 @@
+class C() {
+  port p;
+  domain s = Process();
+  domain r = Process();
+  domain d = D();
+  r.active -- p;
+  s.active -- p;
+  r.active -- d.q;
+}
+
+class F() {
+  port read : { position = object };
+}
+
+domain c = C();
+domain f = File();
+c.p -- f.read;

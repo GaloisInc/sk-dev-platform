@@ -1,0 +1,139 @@
+# Here I put the parameter kinds in parentheses after
+# the template or interface names:
+# $1 is the string (e.g. "c") to guarantee uniqueness
+template C(type_) { # 1
+  Process($1_s);    # 3
+  Process($1_r);    # 4
+  D($1_d);          # 5
+  D_q($1_d,$1_r);   # hook up q port of "d" with active port of "r"
+                               # $1_d is self parameter D
+                               # $1_r is reference to active port of "r"
+}
+
+# port p in C is active, corresponds to
+# [$1_s, $1_r] (line 2, 6, 7), so no interface generated for the port "p"
+
+template F(type_) { # 8
+  type $1_t; # Because files are primitive?
+  ...
+}
+
+# Generate F_read as if F were a primitive class
+interface F_read(type_,domain) { # 9
+  allow $2 $1_t:file read;
+}
+
+template Process {
+    type $1_t;
+}
+
+interface Process_active {
+    $3 ($1, $2);
+}
+
+# Following would go into a .te file.
+C(c);           # 10
+F(f);           # 11
+F_read(f,c_s);  # 12, 6
+F_read(f,c_r);  # 12, 7
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+From:   magnus@galois.com
+
+Subject: Re: Diagrams from today, please review
+
+Date: April 25, 2008 10:27:48 AM PDT
+To:   peter@galois.com
+Cc:   joe@galois.com
+
+Yes, thanks Peter!  Here are my tweaks:
+
+Lobster:
+
+1 class C : {
+2   port p;
+3   s = new "s" Process;
+4   a = new "r" Process;
+5   d = new "d" D;
+6   a.active -- p;
+7   s.active -- p;
+8   a.active -- d.q;
+  }
+
+8 class F {
+9   port read;
+    ...
+ }
+
+10 c = new "c" C;
+11 f = new "f" F;
+12 c.a -- f.read;
+
+Shrimp:
+
+# Here I put the parameter kinds in parentheses after
+# the template or interface names:
+
+template C(type_) { # 1
+  Process($1_s);    # 3
+  Process($1_r);    # 4
+  D($1_d);          # 5
+  D_q($1_d,$1_r);   # 8
+}
+
+# port p in C is active, corresponds to
+# [$1_s, $1_r] (line 2, 6, 7)
+
+template F(type_) { # 8
+  type $1_t;
+  ...
+}
+
+interface F_read(type_,domain) { # 9
+  allow $2 $1_t:file read;
+}
+
+C(c);           # 10
+F(f);           # 11
+F_read(f,c_s);  # 12, 6
+F_read(f,c_r);  # 12, 7
+
+# It occurs to me that the references to c_s and c_r are actually
+# broken, since they are not supposed to be visible outside C!
+
+# A cleaner way would be to extend the reference policy with
+# parameterized set definitions (easy to do I think):
+
+domain set C_p(domain_) { Process_active($1_s) Process_active($1_r) }
+
+domain set Process_active(domain_) { $1_d }
+
+# Now, the code for 12 would be
+F_read(f, C_p(c));
+
+# After M4 expansion, this corresponds to
+allow { { c_s_d } { c_r_d } } f_t:file read;
+
+# With this extension to the reference policy, the port connections
+# would be a lot easer to translate!
+
+####### M4File:
+
+Lobster:
+
+1 class M4File {
+2   f = new "f" File;
+3   port rg -- f.read, f.getattr;
+4 }
+
+Shrimp:
+
+template M4File(type_) { # 1
+  File($1_f);            # 2
+}
+
+interface M4File_rg(type_, domain) { # 3
+  File_read($1_f, $2);     # 3
+  File_getattr($1_f, $2);  # 3
+}

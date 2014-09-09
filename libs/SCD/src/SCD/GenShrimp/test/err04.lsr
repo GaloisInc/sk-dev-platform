@@ -1,0 +1,7 @@
+class Foo() {
+  port p;
+  port q;
+  p -- q;
+}
+
+domain f = Foo();

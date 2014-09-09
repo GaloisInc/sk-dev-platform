@@ -1,0 +1,32 @@
+#!/bin/sh
+
+EXTENSION_DIR=/etc/selinux/extension
+
+mkdir -p /selinux
+mount -t selinuxfs none /selinux
+mkdir -p /etc/selinux/refpolicy/modules
+mkdir -p /etc/selinux/refpolicy/policy
+mount -t tmpfs none /etc/selinux/refpolicy/modules
+
+echo "Installing SELinux policy..."
+cd /usr/share/selinux/refpolicy
+ls *.pp | grep -v base.pp | xargs semodule -b base.pp -s refpolicy -i
+cd -
+
+echo "Associating Linux user 'default' with SELinux ID 'user_u'..."
+semanage login -a -s unconfined_u default
+
+echo "Activating SELinux policy..."
+load_policy -i
+
+if [ -d "$EXTENSION_DIR" ]; then
+  echo "Load policy extension"
+  make -C "$EXTENSION_DIR" -f /usr/share/selinux/refpolicy/include/Makefile AWK=awk load
+fi
+
+echo "Restoring file contexts from SELinux policy..."
+restorecon -R /
+chcon -t shell_exec_t /bin/sh
+
+echo "Done."
+

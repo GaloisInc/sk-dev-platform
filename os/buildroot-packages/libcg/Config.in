@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBCG
+	bool "libcg"
+	help
+	  Linux kernel control groups userspace library and utilities
+
+	  http://libcg.sourceforge.net/

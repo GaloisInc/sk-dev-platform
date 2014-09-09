@@ -1,0 +1,42 @@
+INPUT: ex21.lsr
+class Subject() {
+  port subj : { position = subject };
+}
+
+class Object() {
+  port obj : { position = object };
+}
+
+class Foo() {
+  port p;
+  domain a = Subject();
+  domain b = Subject();
+  p -- a.subj;
+  p -- b.subj;
+}
+
+class Bar() {
+  port q;
+  domain c = Object();
+  domain d = Object();
+  q -- c.obj;
+  q -- d.obj;
+}
+
+domain e = Foo();
+domain f = Bar();
+
+e.p -- f.q;
+OUTPUT: ex21.lsr
+module.te: ex21.lsr
+policy_module(module,1.0)
+type f_c_t;
+type f_d_t;
+type e_a_t;
+type e_b_t;
+allow e_b_t f_d_t:object obj;
+allow e_b_t f_c_t:object obj;
+allow e_a_t f_d_t:object obj;
+allow e_a_t f_c_t:object obj;
+module.fc: ex21.lsr
+

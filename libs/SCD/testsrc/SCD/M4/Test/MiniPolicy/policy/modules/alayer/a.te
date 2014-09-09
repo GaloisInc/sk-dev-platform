@@ -1,0 +1,10 @@
+policy_module(a,1.0)
+
+type a_file_t;
+type a_another_file_t;
+
+
+type a_t;
+
+allow a_t a_file_t:file { read write };
+allow a_t a_another_file_t:file { read write };

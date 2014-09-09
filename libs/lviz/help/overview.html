@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>overview.html</title>
+</head>
+<body>
+<h1>Policy DSL Tools<br>
+</h1>
+<address><span style="font-weight: bold;">Navigation</span>: <a
+ href="overview.html">Home</a> --&gt;Other Pages:&nbsp; <a
+ href="lviz.html">LViz</a>, <a href="lobstercompiler.html">Lobster
+compiler</a>, <a href="lobsterdsl.html">Lobster DSL</a>, <a
+ href="genlobster.html">GenLobster</a>, <a href="slide.html">Slide</a>,
+<a href="symbion.html">Symbion</a> , <a href="shrimp.html">Shrimp</a><br>
+</address>
+<h2>Overview &amp; Goals<br>
+</h2>
+Many security policy languages are difficult to use because they
+require programming large sets of low level rules to be
+effective.&nbsp; SELinux is an example policy language which can
+require 100,000's of rules to effective secure an operating
+system.&nbsp;
+Because of the complexity, modifying SELinux rules
+to allow for any change presents a large barrier.&nbsp; Further,
+programming a system composed of multiple different policy elements
+with different types of rules (SELinux, Xen, guard) can be more
+daunting.&nbsp; An example system might
+be two SELinux servers, a virtual machine, and an external guard.<br>
+<br>
+The Policy DSL project goal was to provide tools and techniques to
+allow for better handling of security policy creation and
+analysis.&nbsp; The initial focus was to
+provide tools targeted at solving SELinux configuration.&nbsp; Later
+work created a more general approach to solving policy problems which
+could be applied across different policy languages, including the
+Lobster DSL.<br>
+<br>
+Lobster DSL&nbsp; is a high level policy
+specification language which provides methods of abstracting,
+understanding, and analyzing security policies.&nbsp; The Lobster Tool
+has the ability to analyze the DSL, compile it into Shrimp DSL format
+(a subset of SE Linux Native), test data flow assertion (using Symbion
+extensions to the DSL), and display&nbsp; the policy graphically.<br>
+<h2>Workflow and Tool Interaction<br>
+</h2>
+Policy DSL tools are anchored around two languages: Lobster, the
+abstract DSL used to describe any policy and Shrimp DSL, which is close
+to the native SELinux policy with some additional checking added.&nbsp;
+The tools available are shown in Figure 1. <br>
+<br>
+<img src="tools.jpg" alt="Policy DSL Tool Flow"
+ style="border: 2px solid ; width: 407px; height: 439px;" align="top"
+ hspace="30"><br>
+<big><span style="font-weight: bold;">Figure 1: Overview of the Policy
+DSL Tool Set</span></big><br>
+<br>
+The workflows supported by this set of tools are based around creating
+and analyzing policies.&nbsp; Policies can be created at an abstract
+level via Lobster and lower level polices can be generated from them.
+Alternatively existing SELinux policies and be analyzed or abstracted
+into Lobster.&nbsp; Some example workflows:<br>
+<ol>
+  <li>Creating a Lobster policy in a text file and viewing it in
+LViz.&nbsp; Symbion and the compilation checking can be run from LViz</li>
+  <li>Compile a Lobster policy, execute any Symbion assertions, and
+generate Shrimp DSL</li>
+  <li>Running genLobster to reverse compile Shrimp files into Lobster
+DSL</li>
+  <li>Running Shrimp tools on a policy to identify format and style
+problems</li>
+  <li>Viewing the Reference policy in Slide and seeing Shrimp "lint"
+like problems associated with it.<br>
+  </li>
+</ol>
+<h2>Tools &amp; Components</h2>
+The tools and languages each have their own specific pages covering
+them in more detail.&nbsp;&nbsp; Links to each tool with a short
+description follows:<br>
+<ul>
+  <li><a href="lobsterdsl.html">Lobster DSL</a> - Summary of the
+Lobster Domain Specific Language used to define policies in an abstract
+fashion.&nbsp; It is not tied to any specific policy languages and can
+be used as the starting point for any policy definition. Compilation to
+multiple policy languages is possible.<br>
+  </li>
+  <li><a href="symbion.html">Symbion</a> - Symbion is an extension to
+the Lobster DSL language that consist of a series of assertion
+statements about information flow in the policy.&nbsp; Symbion is run
+as part of compilation of the policy and can be run from LViz, the
+lobster policy visualization tool.</li>
+  <li><a href="lviz.html">LViz</a>, - Lobster Visualization tool which
+will display a lobster policy.&nbsp; Symbion checks can be viewed as
+well.<br>
+  </li>
+  <li><a href="lobstercompiler.html">Lobster compiler</a>- Overview of
+the
+Lobster compiler which current converts a lobster policy into a shrimp
+policy.&nbsp; <br>
+  </li>
+  <li><a href="shrimp.html">Shrimp&nbsp; </a>- Shrimp is a format and
+tool set for analyzing SELinux policies.&nbsp; <br>
+  </li>
+  <li><a href="genlobster.html">GenLobster</a>, - Reverse compiler
+which takes SELinux like Shrimp and converts it to Lobster<br>
+  </li>
+  <li><a href="slide.html">Slide</a> - Viewing tool for examining
+SELinux policies while showing Shrimp "lint" like issues.<br>
+  </li>
+</ul>
+<h2>Supported Systems</h2>
+Policy DSL tools were designed to operate on Linux OS, although most of
+the testing has been on Ubuntu and Centos Linux.<br>
+The SLIDE
+program from Tresys is tested and designed around Fedora Linux because
+it uses Fedora's version of Eclipse.&nbsp; <br>
+<h2>Technical Papers</h2>
+Multiple technical papers have been produced during the Policy DSL
+project which are more detailed reference material.&nbsp; A few of the
+details of the languages have been modified since the papers have been
+written, but the underlying concepts are the same.&nbsp; This set of
+help files provide the latest up to date syntax of the tools and
+languages.<br>
+The papers include:<br>
+<ul>
+  <li><a href="Policy-DSL-HCSS-2009.pdf">Policy-DSL-2009</a> A summary
+of the Policy DSL work, covering shrimp, symbion and lobster.&nbsp;
+This is the most up to date paper</li>
+  <li><a href="Policy-DSL-HCSS-2009-slides.pdf">Policy DSL Slides</a> -
+presentation providing overview of Policy DSL work.</li>
+  <li><a href="lobster.pdf">Lobster DSL paper</a> describes the lobster
+generic policy language and relates it to SELinux.<br>
+  </li>
+  <li><a href="symbion.pdf">Symbion paper</a> describing the original
+intentions of the symbion language.&nbsp; The implemented version is
+slightly different than the paper and is properly described below.</li>
+  <li><a href="LowLevelPoliciesPaper.pdf">SELinux Policy Semantics</a>:
+Describes semantics of SELinux and the associated Haskell
+implementation
+of the semantics.</li>
+  <li><a href="SCD-Shrimp-2008-03-04.pdf">Shrimp Mar 2008 Presentation</a>:
+A
+discussion of the Shrimp approach to analyzing the reference policy</li>
+</ul>
+<br>
+<br>
+</body>
+</html>

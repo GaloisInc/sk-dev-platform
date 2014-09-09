@@ -1,0 +1,26 @@
+## <summary>Dummy interface</summary>
+
+########################################
+## <summary>
+##	Define a mutually-recursive interface.
+## </summary>
+#
+
+interface(`mutrec_other_iface',`
+    mutrec_iface($1_type_t);
+')
+
+########################################
+## <summary>
+##	Placeholder interface.
+## </summary>
+#
+interface(`another_placeholder_interface',`
+	gen_require(`
+                # Defined in the errors module, so visible but 
+                # not permissible for use here.  This should
+                # raise IllegalSymbolReference.
+
+		type valid_type_t;
+	')
+')

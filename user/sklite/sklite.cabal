@@ -1,0 +1,103 @@
+Name:                sklite
+Version:             0.1
+Synopsis:            Separation Kernel Lite library and tools
+License:             BSD3
+License-file:        LICENSE
+Author:              Jonathan Daugherty <jtd@galois.com>
+Maintainer:          Jonathan Daugherty <jtd@galois.com>
+Category:            System
+Build-type:          Simple
+Cabal-version:       >=1.8
+
+Library
+  Hs-Source-Dirs:    src
+  GHC-Options:       -Wall
+
+  Exposed-Modules:
+    Sklite.Types
+    Sklite.Layout.Validation
+    Sklite.Drivers
+    Sklite.Paths
+    Sklite.Util
+    Sklite.Boot
+    Sklite.ToolMain
+    Sklite.Config
+
+  Build-depends:
+    base >= 3 && < 5,
+    pretty >= 1.1,
+    process >= 1.1,
+    temporary >= 1.1,
+    directory >= 1.1,
+    mtl >= 2.0,
+    filepath >= 1.1,
+    xml >= 1.3
+
+Executable sklite-drivers
+  Hs-Source-Dirs:    src
+  GHC-Options:       -Wall
+  Main-is:           DriversMain.hs
+
+  Build-depends:
+    base >= 3 && < 5,
+    pretty >= 1.1,
+    process >= 1.1,
+    temporary >= 1.1,
+    directory >= 1.1,
+    mtl >= 2.0,
+    xml >= 1.3,
+    filepath >= 1.1
+
+Executable sklite-boot
+  Hs-Source-Dirs:    src
+  GHC-Options:       -Wall
+  Main-is:           BootMain.hs
+
+  Build-depends:
+    base >= 3 && < 5,
+    pretty >= 1.1,
+    process >= 1.1,
+    temporary >= 1.1,
+    directory >= 1.1,
+    mtl >= 2.0,
+    xml >= 1.3,
+    filepath >= 1.1
+
+Executable sklite-tests
+  Hs-Source-Dirs:    tests, src
+  GHC-Options:       -Wall
+  Main-is:           Main.hs
+
+  Other-Modules:
+    LayoutValidationTests
+    ConfigParsingTests
+    ChannelExplosionTests
+
+  Build-depends:
+    base >= 3 && < 5,
+    pretty >= 1.1,
+    process >= 1.1,
+    temporary >= 1.1,
+    directory >= 1.1,
+    mtl >= 2.0,
+    filepath >= 1.1,
+    xml >= 1.3,
+    HUnit >= 1.2.2 && < 1.2.5,
+    test-framework >= 0.3.3 && < 0.6,
+    test-framework-hunit >= 0.2.6 && < 0.3
+
+Executable sklite-sepolicy
+  Hs-Source-Dirs:    src
+  GHC-Options:       -Wall
+  Main-is:           SEPolicyMain.hs
+  Other-Modules:     Sklite.SEPolicy
+
+  Build-depends:
+    base >= 3 && < 5,
+    pretty >= 1.1,
+    process >= 1.1,
+    temporary >= 1.1,
+    directory >= 1.1,
+    xml >= 1.3,
+    mtl >= 2.0,
+    filepath >= 1.1

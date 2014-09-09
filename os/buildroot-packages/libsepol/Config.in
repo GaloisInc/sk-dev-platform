@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBSEPOL
+	bool "libsepol"
+	help
+	  SELinux policy development headers necessary for building
+	  Busybox with SELinux support
+
+          http://userspace.selinuxproject.org/trac

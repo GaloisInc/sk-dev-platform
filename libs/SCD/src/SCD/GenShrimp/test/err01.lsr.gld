@@ -1,0 +1,13 @@
+INPUT: err01.lsr
+Foo -- Bar;
+
+OUTPUT: err01.lsr
+lobster: ERROR: couldn't interpret the Lobster policy file:
+in statement PortConnection [QualNameExpression (UnQual (TypeIdent (TypeId (UIdent "Foo"))))] NeutralConnection [QualNameExpression (UnQual (TypeIdent (TypeId (UIdent "Bar"))))]:
+in expression QualNameExpression (UnQual (TypeIdent (TypeId (UIdent "Foo")))):
+no such type identifier TypeId (UIdent "Foo")
+module.te: err01.lsr
+
+module.fc: err01.lsr
+cat: module.fc: No such file or directory
+

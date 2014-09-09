@@ -1,0 +1,7 @@
+class Poly() {
+  port p;
+}
+
+domain a = Poly();
+domain b = Poly();
+a -- b;

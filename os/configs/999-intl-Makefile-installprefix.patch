@@ -1,0 +1,11 @@
+--- gcc/intl/Makefile.in	2012-04-17 13:05:48.000000000 -0700
++++ gcc/intl/Makefile.in	2012-04-17 13:05:57.000000000 -0700
+@@ -112,7 +112,7 @@
+ DEFS-dcigettext.o = -DLOCALEDIR="\"$(localedir)\""
+ DEFS-localealias.o = -DLOCALE_ALIAS_PATH="\"$(aliaspath)\""
+ DEFS-localcharset.o = -DLIBDIR="\"$(libdir)\""
+-DEFS-relocatable.o = -DINSTALLDIR="\"$(libdir)\""
++DEFS-relocatable.o = -DINSTALLDIR="\"$(libdir)\"" -DINSTALLPREFIX="\"$(prefix)\""
+ 
+ all: all-@USE_INCLUDED_LIBINTL@
+ all-yes: libintl.a libintl.h config.intl

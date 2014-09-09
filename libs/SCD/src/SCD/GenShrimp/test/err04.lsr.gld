@@ -1,0 +1,16 @@
+INPUT: err04.lsr
+class Foo() {
+  port p;
+  port q;
+  p -- q;
+}
+
+domain f = Foo();
+OUTPUT: err04.lsr
+lobster: ERROR: couldn't interpret the Lobster policy file:
+connection between external ports
+module.te: err04.lsr
+
+module.fc: err04.lsr
+cat: module.fc: No such file or directory
+

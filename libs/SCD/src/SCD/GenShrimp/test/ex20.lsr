@@ -1,0 +1,12 @@
+class C1() {
+  port p1 : { position = subject  } ;
+}
+
+class C0() {
+  port p0 : { position = object } ;
+}
+
+domain c1 = C1() ;
+domain c0 = C0() ;
+c1.p1 <--> c0.p0 ;
+

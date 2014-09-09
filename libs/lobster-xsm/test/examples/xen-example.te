@@ -1,0 +1,10 @@
+policy_module(module,1.0)
+type d1_t;
+type d2_t;
+type xen_t;
+type e_t;
+allow d1_t xen_t:xen readconsole;
+allow d1_t e_t:event create;
+allow d2_t xen_t:xen writeconsole;
+allow e_t d2_t:event bind;
+type_transition d1_t d2_t:event e_t;

@@ -1,0 +1,11 @@
+class Foo() {
+  port p;
+}
+
+class Bar() {
+  port q;
+  q -- x.p;
+  domain x = Foo();  
+}
+
+domain y = Bar();

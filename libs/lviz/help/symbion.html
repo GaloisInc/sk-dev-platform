@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>Symbion Syntax Summary</title>
+</head>
+<body>
+<h1>Symbion Language Summary</h1>
+<address><span style="font-weight: bold;">Navigation</span>: <a
+ href="lviz.html">Home </a>&gt; Symbion</address>
+<h2>Overview</h2>
+Symbion language allows for embedded assertion tests in a Lobster DSL
+file.&nbsp; While Lobster DSL sets the policy information, Symbion can
+be used to verify that specific information flows exist or do not
+exist.&nbsp; This is useful both for tested policies for completeness,
+but also during policy design to make sure that the proper system
+configuration and associated policy provide the proper level of
+protection.<br>
+<h2>Symbion Syntax Summary</h2>
+Bold italics are used for descriptive names not specific text in the
+following examples.<br>
+<h3>General Form</h3>
+<p>Assertion statements can be put directly in the Lobster DSL
+file.&nbsp; Their general format is:<br>
+assert [<strong><i>domain</i></strong>.<strong><i>port</i></strong>]
+-&gt; [<strong><i>domain</i></strong>.<strong><i>port</i></strong>] :: <strong><i>assertion</i></strong>;
+</p>
+<p>
+<strong><i>domain </i></strong>is a named lobster domain at the same
+level as the assertion.
+</p>
+<p>When a domain is placed in a class, the ports of that class can be
+referred to by their name without a domain.<br>
+Alternatively, A special case of domain exists, call <strong><i>this</i></strong>,
+which refers to the domain above the assertion. For example:
+[this.read] assertion inside the class definition for secret, refers to
+the port 'read' of the secret class.&nbsp; <br>
+</p>
+<p>
+<strong><i>port </i></strong>is a named port on a domain or *, which
+means any port on that domain: eg. [secret.rw], [secret.*]<br>
+</p>
+<p>
+<strong><i>assertions </i></strong>are one of:
+</p>
+<table class="wiki" border="1">
+  <tbody>
+    <tr>
+      <td><strong>assertion</strong></td>
+      <td><strong>definition</strong></td>
+      <td><strong>example</strong> </td>
+    </tr>
+    <tr>
+      <td>exists</td>
+      <td>the information flow path must exist</td>
+      <td>assert [secret.rw]-&gt;[internet.active] :: exists; </td>
+    </tr>
+    <tr>
+      <td>never</td>
+      <td>there can be no information flow path<br>
+      </td>
+      <td>assert [secret.rw]-&gt;[internet.active] :: never; </td>
+    </tr>
+    <tr>
+      <td>.* [<i>domain</i>.<i>port</i>] .*</td>
+      <td>the path must pass through <i>domain.port</i></td>
+      <td>assert [secret.rw]-&gt;[internet.active] :: .* [encrypt.a]
+.*; </td>
+    </tr>
+    <tr>
+      <td>.* [<i>domain</i>.*] .*</td>
+      <td>the path must pass through the domain on any port</td>
+      <td>assert [secret.rw]-&gt;[internet.active] : .* [encrypt.*] .*;
+      </td>
+    </tr>
+    <tr>
+      <td>* [<i>domain.port</i>] ...<i>one or more domain.ports </i> .*</td>
+      <td>path must pass though all named items in order</td>
+      <td>assert [secret.rw]-&gt;[internet.active] : .* [encrypt.*] .*
+[logger.read] .*; </td>
+    </tr>
+  </tbody>
+</table>
+<h3>Un-implemented Features</h3>
+These assertion features are not implemented and are potential
+additions for future Symbion development.
+<table class="wiki" border="1">
+  <tbody>
+    <tr>
+      <td><strong>assertion</strong></td>
+      <td><strong>definition</strong></td>
+      <td><strong>example</strong> </td>
+    </tr>
+    <tr>
+      <td>.* &lt;isInternal&gt; .*</td>
+      <td>every flow uses a connection internal to the domain</td>
+      <td>assert [secret.rw]-&gt;[internet.active] :: .*
+&lt;isInternal&gt; .*; </td>
+    </tr>
+  </tbody>
+</table>
+<h2>Examples</h2>
+<h3>Example Symbion Statements<br>
+</h3>
+<table border="1" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; font-weight: bold;">Examples<br>
+      </td>
+      <td style="vertical-align: top; font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">assert [proc.ext] -&gt;
+[secret.readwrite] :: exists ;<br>
+      </td>
+      <td style="vertical-align: top;">verify that domain 'proc', port
+'ext' connects to domain 'secret', port 'readwrite'<br>
+      </td>
+    </tr>
+    <tr>
+      <td>assert [secret.*] -&gt; [internet.*] :: never ;</td>
+      <td style="vertical-align: top;">verify that secret domain's
+ports never connect to internet domain's ports<br>
+      </td>
+    </tr>
+    <tr>
+      <td>assert [internet.*] -&gt; [high.*] :: exists ;</td>
+      <td style="vertical-align: top;">verify that the domain
+'internet' has a connection to the domain 'high'<br>
+      </td>
+    </tr>
+    <tr>
+      <td>assert [high.*] -&gt; [low.*] :: .* [encrypt.*] .*;</td>
+      <td style="vertical-align: top;">verify that any domain 'high'
+connections to the domain 'low' pass through the domain 'encrypt'<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">assert [high.*] -&gt; [low.*] ::
+.* [logger.*] .* [logfile.*] .* [encrypt.*] .* ;<br>
+      </td>
+      <td style="vertical-align: top;">Verify that any domain 'high'
+connections to domain 'low' pass through 'logger' and 'logfile' and
+'encrypt' in that order<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Example Code &amp; Result</h2>
+<code>This example Lobster file defines two classes and includes
+Symbion assertion statements at the bottom.&nbsp; <br>
+</code>
+<table style="text-align: left; width: 491px; height: 268px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>class Process() {&nbsp;
+port active : {position = subject};}<br>
+class Network() {&nbsp; port readwrite : {position = object};}<br>
+domain internet = Network();<br>
+domain secret = Network();<br>
+domain low = Process();<br>
+domain high = Process();<br>
+high.active &lt;--&gt; secret.readwrite ;<br>
+low.active &lt;--&gt; internet.readwrite ;<br>
+low.active --&gt; secret.readwrite;<br>
+      <br>
+assert [internet.*] -&gt; [high.*] :: exists ;<br>
+assert [low.*] -&gt; [high.*] :: exists ;<br>
+assert [high.*] -&gt; [internet.*] :: never;<br>
+assert [high.*] -&gt; [low.*] :: never;<br>
+assert [secret.*] -&gt; [internet.*] :: never;<br>
+assert [secret.*] -&gt; [low.*] :: never;</code></td>
+    </tr>
+  </tbody>
+</table>
+<code></code><br>
+A sketch illustrating the legal information flows follows:<br>
+<img style="width: 218px; height: 185px;" alt="symb1 example"
+ src="symb1.jpg"><br>
+<br>
+The std err output is shown below with the extra line spaces removed:<br>
+<br>
+<table style="text-align: left; width: 494px; height: 132px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">assertion passed:assert [secret
+.*]-&gt; [low .*]:: never ;<br>
+assertion passed:assert [secret .*]-&gt; [internet .*]:: never ;<br>
+assertion passed:assert [high .*]-&gt; [low .*]:: never ;<br>
+assertion passed:assert [high .*]-&gt; [internet .*]:: never ;<br>
+assertion passed:assert [low .*]-&gt; [high .*]:: exists ;<br>
+assertion passed:assert [internet .*]-&gt; [high .*]:: exists ;</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>Symbion Paths Through Domains</h2>
+Symbion assumes that all ports in a domain are connected internally and
+that an implied connection exists from a port to itself.&nbsp; This is
+illustrated in the diagram below<br>
+<br>
+<img style="width: 584px; height: 222px;" alt=""
+ src="symbion-port-example.jpg"><br>
+<br>
+These assumptions can be overridden by assertions inside a class
+definition.&nbsp; The example shows assertions for both a single pin
+and two pins.<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">class A ( ) {<br>
+&nbsp; port a;<br>
+&nbsp; port b;<br>
+&nbsp; assert [this.a] -&gt; [this.b] :: never; // prevents the two
+port connection from x to y<br>
+&nbsp; assert [this.a] -&gt; [this.a] ::never;&nbsp; // prevents
+external connections to x from being connected through x<br>
+}</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>References</h2>
+<a href="Policy-DSL-HCSS-2009.pdf">Policy-DSL-2009</a> A summary
+of the Policy DSL work, covering shrimp, symbion and lobster.&nbsp;
+This is the most up to date paper<br>
+<a href="symbion.pdf">Symbion paper</a> describing the original
+intentions of the symbion language.&nbsp; The implemented version is
+slightly different than the paper and is properly described below.<br>
+<br>
+</body>
+</html>

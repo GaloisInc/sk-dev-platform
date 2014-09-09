@@ -1,0 +1,20 @@
+Name:                genLobster
+Version:             0.1
+Description:         shrimp to lobster reverse compilation
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+
+Executable genLobster
+  Main-is:           Main.hs
+  Build-Depends:
+                     base >= 4,
+                     pretty >= 1,
+                     directory >= 1,
+                     mtl >= 1,
+                     containers >= 0.1.0.0,
+                     lobster >= 0.1,
+                     scd >= 0.1

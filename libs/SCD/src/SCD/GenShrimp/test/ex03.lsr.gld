@@ -1,0 +1,8 @@
+INPUT: ex03.lsr
+x = "hello, world";
+
+OUTPUT: ex03.lsr
+module.te: ex03.lsr
+policy_module(module,1.0)
+module.fc: ex03.lsr
+

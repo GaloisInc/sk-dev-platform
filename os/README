@@ -1,0 +1,40 @@
+
+Separation Kernel Operating System
+==================================
+
+This directory contains scripts to fetch and build the Linux kernel
+and filesystem images necessary to run the separation kernel
+development environment.
+
+ 1. Run the bootstrap script.  This will fetch the Linux kernel
+    repository and buildroot package necessary to build the images.
+    It will also install the necessary customized configurations for
+    each component.
+
+    os $ bash bootstrap.sh
+
+ 2. The bootstrap script will create a 'build' directory containing
+    the fetched code.  Use the Makefile in the current directory to
+    build it all:
+
+    os $ make
+
+It's always safe to run 'bootstrap.sh' again in the future, since it
+will not overwrite your configs or source trees and it will update the
+git repositories if they already exist.
+
+Directories
+===========
+
+ - configs/
+
+   Customized configurations and build scripts for some of the
+   components involved, such as busybox, buildroot, and the Linux
+   kernel
+
+ - buildroot-packages/
+
+   Custom buildroot package definitions and scripts used to build
+   components needed to run the separation kernel environment, such as
+   'libdl' and the customized 'schedtool' program needed for setting
+   deadline scheduling parameters.

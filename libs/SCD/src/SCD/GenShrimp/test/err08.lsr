@@ -1,0 +1,9 @@
+class Foo() {
+  port p : { position = object } ;
+}
+
+port q : { position = subject, position = subject } ;
+
+domain a = Foo();
+
+q -- a.p;

@@ -1,0 +1,19 @@
+class Process() {
+  port active : { position = subject };
+}
+
+class File(filenameRegex) {
+  port getattr : { position = object };
+}
+
+class XClass() {
+  port p;
+  domain proca = Process();
+  domain procb = Process();
+  proca.active -- p;
+  procb.active -- p;
+}
+
+domain x = XClass();
+domain filea = File("a.txt");
+x.p -- filea.getattr;

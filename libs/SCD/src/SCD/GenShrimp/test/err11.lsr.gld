@@ -1,0 +1,28 @@
+INPUT: err11.lsr
+type LogFile;
+type NotLogFile;
+
+class Log() {
+  port read : { type = LogFile, position = object };
+}
+
+class Proc() {
+  port p : { type = NotLogFile, position = subject };
+}
+
+domain x = Log();
+domain y = Proc();
+
+y.p -- x.read;
+OUTPUT: err11.lsr
+lobster: ERROR: couldn't interpret the Lobster policy file:
+in object "":
+in connection x.read -- y.p
+with port types {type = LogFile, position = object}
+and {type = NotLogFile, position = subject}:
+incompatible types: ContextType (Context []) (TypeId (UIdent "LogFile")) and ContextType (Context []) (TypeId (UIdent "NotLogFile"))
+module.te: err11.lsr
+
+module.fc: err11.lsr
+cat: module.fc: No such file or directory
+

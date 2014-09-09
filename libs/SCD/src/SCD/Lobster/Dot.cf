@@ -1,0 +1,22 @@
+-- An incomplete subset of the dot language used by graphviz.
+
+DotGraph . DotGraph ::= "graph" Id "{" [Stmt] "}" ;
+
+Graph . Stmt ::= "graph" AttrList ";" ;
+Node . Stmt ::= Id AttrList ";" ;
+SubGraph . Stmt ::= "subgraph" Id "{" [Stmt] "}" ;
+Edge . Stmt ::= Id "--" Id AttrList ";" ;
+
+SomeAL . AttrList ::= "[" [Attr] "]" ;
+NoneAL . AttrList ::= ;
+
+Attr . Attr ::= Id "=" Id ;
+
+StrId . Id ::= String ;
+IntId . Id ::= Integer ;
+NameId . Id ::= Name ;
+
+token Name ((upper | lower | '_') (upper | lower | '_' | digit)*) ;
+
+separator Attr "," ;
+separator Stmt "" ;

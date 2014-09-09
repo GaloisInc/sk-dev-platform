@@ -1,0 +1,257 @@
+// ------------------------------------------------------------------------
+// 
+// Prelude classes for Lobster.
+// For now, this is prepended (by Make) on the file that is to be compiled.
+// Eventually, some sort of import is needed for Lobster.
+//
+// ------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------
+//
+// Following is a list of process permissions in SELinux
+// noatsecure	Disable secure mode environment cleansing.
+// getsched	Get priority of another process.
+// signull	Test for exisitence of another process without sending a signal
+// sigstop	Send SIGSTOP signal
+// getattr       Get attributes of a file.
+// share         Allow state sharing with cloned or forked process.
+// getpgid       Get group Process ID of another process.
+// signal        Send a signal other than SIGKILL, SIGSTOP, or SIGCHLD.
+// setcap        Set Linux capabilities.
+// sigchld       Send SIGCHLD signal.
+// setexec       Override the default context for the next exec().
+// getcap        Get Linux capabilities.
+// getsession    Get session ID of another process.
+// setsched      Set priority of another process.
+// fork          Fork into two processes.
+// ptrace        Trace program execution of parent or child.
+// sigkill       Send SIGKILL signal.
+// setpgid       Set group Process ID of another process.
+// transition    Transition to a new context on exec().
+// setfscreate   Set own fscreate context.
+// siginh        Inherit signal state from old sid.
+// setrlimit     Change process hard limits.
+// rlimitinh     Inherit resource limits from old sid.
+// dyntransition Dynamically transition to a new context.
+// setcurrent    Set the current process context.
+// execmem       Make executable an anonymous mapping or private
+//               file mapping that is writable.
+// execstack     Make the main process stack executable.
+// execheap      Make the heap executable.
+//
+// Source: http://www.tresys.com/selinux/obj_perms_help.html#process
+//
+// To these permissions we add the active port, which acts as the source
+// of activity for a process. It is the active port that we use to
+// connect to objects. For example, the active port would be connected
+// to a file.read port.
+//
+// ------------------------------------------------------------------------
+
+class Process () {
+  port noatsecure    : { position = object };
+  port getsched	     : { position = object };
+  port signull	     : { position = object };
+  port sigstop       : { position = object };
+  port getattr       : { position = object };
+  port share         : { position = object };
+  port getpgid       : { position = object };
+  port signal        : { position = object };
+  port setcap        : { position = object };
+  port sigchld       : { position = object };
+  port setexec       : { position = object };
+  port getcap        : { position = object };
+  port getsession    : { position = object };
+  port setsched      : { position = object };
+  port ptrace        : { position = object };
+  port sigkill       : { position = object };
+  port setpgid       : { position = object };
+  port setfscreate   : { position = object };
+  port siginh        : { position = object };
+  port setrlimit     : { position = object };
+  port rlimitinh     : { position = object };
+  port dyntransition : { position = object };
+  port setcurrent    : { position = object };
+  port execmem       : { position = object };
+  port execstack     : { position = object };
+  port execheap      : { position = object };
+  port fork          : { position = object };
+  port transition    : { position = object };
+  port active        : { position = subject };
+}
+
+// ------------------------------------------------------------------------
+// Common file class
+// Source: http://www.tresys.com/selinux/obj_perms_help.html#common_file_getattr
+//
+// getattr       Get file attributes for block file, such as
+//               access mode. (e.g. stat, some ioctls. ...)
+// relabelto     Change the security context based on the new type.
+// unlink        Remove hard link (delete).
+// ioctl         IO control system call requests not addressed by other permissions.
+// execute       Execute.
+// append        Append file contents. i.e opened with O_APPEND flag.
+// read          Read block file contents.
+// setattr       Change file attributes for block file such as
+//               access mode. (e.g. chmod, some ioctls, ...)
+// swapon        Allows file to be used for paging/swapping space.
+// write         Write or append file contents.
+// lock          Set and unset block file locks.
+// create        Create new block file.
+// rename        Rename a hard link.
+// mounton       Use as mount point; only useful for directories in Linux.
+// quotaon       Enabling quotas.
+// relabelfrom   Change the security context based on existing type.
+// link	         Create hard link to block files
+//
+// Entrypoint is a permission added by lobster, to support domain
+// transitions.
+// ------------------------------------------------------------------------
+
+class File ( filenameRegex ) { // Primitive class
+  port getattr     : { position = object };
+  port read        : { position = object };
+  port write       : { position = object };
+  port execute     : { position = object };
+  port relabelto   : { position = object };
+  port unlink      : { position = object };
+  port ioctl       : { position = object };
+  port append      : { position = object };
+  port setattr     : { position = object };
+  port swapon      : { position = object };
+  port lock        : { position = object };
+  port create      : { position = object };
+  port rename      : { position = object };
+  port mounton     : { position = object };
+  port quotaon     : { position = object };
+  port relabelfrom : { position = object };
+  port link	   : { position = object };
+  port entrypoint  : { position = object };
+}
+
+// A wrapper for the primitive File class:
+class SimpleFile ( contents, regex ) {
+  domain file = File ( regex );
+  // Ports can be declared and then connected
+  port read : { type = contents };
+  port open;
+  read <--  file.getattr;
+  read <--  file.read;
+  read --   file.ioctl;
+  // Or the operations can be combined
+  port write : { type = contents };
+  write -- file.getattr;
+  write --> file.write;
+  write --> file.ioctl;
+}
+
+// ------------------------------------------------------------------------
+// Primitive directory class
+//
+// New to the directory class
+//   add_name
+//   remove_name
+//   reparent
+//   rmdir
+//   search
+// And it inherits everything from the primitive file class
+// ------------------------------------------------------------------------
+class Directory ( filenameRegex ) {
+  domain dir = File ( filenameRegex );
+  // New ports
+  port add_name    : { position = object };
+  port remove_name : { position = object };
+  port reparent    : { position = object };
+  port rmdir       : { position = object };
+  port search      : { position = object };
+  // Ports inherited
+  port gettattr    <--  file.getattr;
+  port read        <--  file.getattr;
+  port write        --> file.write;
+  port execute     <--> file.execute;
+  port relabelto    --> file.relableto;
+  port unlink       --> file.unlink;
+  port ioctl       <--> file.ioctl;
+  port append       --> file.append;
+  port setattr      --> file.setattr;
+  port swapon       --> file.swapon;
+  port lock         --> file.lock;
+  port create       --> file.create;
+  port rename       --> file.rename;
+  port mounton      --> file.mounton;
+  port quotaon     <--> file.quotaon;
+  port relabelfrom  --> file.relabelfrom;
+  port link	    --> file.link;
+  port entrypoint   --> file.entrypoint;
+
+}
+
+// ------------------------------------------------------------------------
+// Primitive socket class
+// Source:http://www.tresys.com/selinux/obj_perms_help.html
+//
+// append        Write or append socket file contents.
+// relabelfrom   Change the security context based on existing type.
+// create        Create new socket file.
+// read          Read socket file contents.
+// sendto        Send datagrams to socket.
+// connect       Initiate connection.
+// recvfrom      Receive datagrams from socket.
+// send_msg      Send datagram message; implicitly granted if the
+//               message SID is equal to the sending socket SID.
+// bind          Bind name.
+// lock          Set and unset socket file locks
+// ioctl         IO control system call requests not addressed by other permissions.
+// getattr       Get file attributes for socket file, such as access
+//               mode. (e.g. stat, some ioctls. ...)
+// write         Write or append socket file contents.
+// setopt        Set socket options.
+// getopt        Get socket options.
+// listen        Listen for connections.
+// setattr       Change file attributes for file such as access
+//               mode. (e.g. chmod, some ioctls, ...)
+// shutdown      Shutdown connection.
+// relabelto     Change the security context based on the new type.
+// recv_msg      Receive datagram message; implicitly granted if the
+//               message SID is equal to the sending socket SID.
+// accept        Accept a connection.
+// name_bind     Use port or file; for AF_INET sockets, controls relationship
+//               between a socket and it's port number; for AF_UNIX sockets,
+//               controls relationship between a socket and it's file
+// ------------------------------------------------------------------------
+
+class Socket() {
+  port append      : { position = object };
+  port relabelfrom : { position = object };
+  port create      : { position = object };
+  port read        : { position = object };
+  port sendto      : { position = object };
+  port connect     : { position = object };
+  port recvfrom    : { position = object };
+  port send_msg    : { position = object };
+  port bind        : { position = object };
+  port lock        : { position = object };
+  port ioctl       : { position = object };
+  port getattr     : { position = object };
+  port write       : { position = object };
+  port setopt      : { position = object };
+  port getopt      : { position = object };
+  port listen      : { position = object };
+  port setattr     : { position = object };
+  port shutdown    : { position = object };
+  port relabelto   : { position = object };
+  port recv_msg    : { position = object };
+  port accept      : { position = object };
+  port name_bind   : { position = object };
+}
+
+class Init() {
+  port creator;
+}
+domain init = Init(); // Creating a global instance of the Init class
+
+class Syslog() { // System Log
+  type Log;
+  port log : {type = Log, input = 7, output = 0, position = object};
+}
+domain syslog = Syslog(); // And make a system log instance

@@ -1,0 +1,12 @@
+class XClass() {
+  port p : { position = subject };
+}
+
+class YClass() {
+  port q : { position = object };
+}
+
+domain x = XClass();
+domain y = YClass();
+
+x.p -- y.q;

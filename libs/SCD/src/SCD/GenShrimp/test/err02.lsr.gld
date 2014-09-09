@@ -1,0 +1,19 @@
+INPUT: err02.lsr
+class XClass() {
+  port p;
+  p -- q;
+  port q;
+}
+
+domain x = XClass();
+OUTPUT: err02.lsr
+lobster: ERROR: couldn't interpret the Lobster policy file:
+in statement DomainDeclaration (Identifier (LIdent "x")) (ClassId (UIdent "XClass")) []:
+in statement PortConnection [QualNameExpression (UnQual (Ident (Identifier (LIdent "p"))))] NeutralConnection [QualNameExpression (UnQual (Ident (Identifier (LIdent "q"))))]:
+in expression QualNameExpression (UnQual (Ident (Identifier (LIdent "q")))):
+no such identifier Identifier (LIdent "q")
+module.te: err02.lsr
+
+module.fc: err02.lsr
+cat: module.fc: No such file or directory
+

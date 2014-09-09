@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBCAP_NG
+	bool "libcap-ng"
+	help
+	  Capabilities library used by policycoreutils
+
+          http://people.redhat.com/sgrubb/libcap-ng/

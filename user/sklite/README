@@ -1,0 +1,70 @@
+
+Separation Kernel "Lite" (sklite)
+=================================
+
+This document provides some technical details on how to use the
+'sklite' program and how to perform associated duties when using an
+EDF-enabled Linux kernel.
+
+Manipulating Scheduling Parameters
+----------------------------------
+
+If you want to raise the available deadline scheduling bandwidth on an
+EDF-enabled Linux system, execute the following steps in the order
+listed.  Note that other values (e.g., 0 or XXXX) can be replaced with
+the values you actually want to use, so long as they follow the
+requirements below.
+
+ - Decrease the root task group's available runtime bandwidth.
+
+   mount -t cgroup cgroup -o cpu /cgroup/cpu
+   echo 0 > /cgroup/cpu/cpu.rt_runtime_us
+
+ - Decrease the global available runtime bandwidth.
+
+   echo 0 > /proc/sys/kernel/sched_rt_runtime_us
+
+ - Increase the global available deadline runtime bandwidth.
+
+   echo XXXX > /proc/sys/kernel/sched_dl_runtime_us
+
+Explanation:
+
+The linux kernel's runtime bandwidth constraints are expressed as an
+amount of runtime over a period of time.  This value -- a percentage
+of CPU time -- must never exceed 100%, as you would expect.  The
+kernel's realtime and deadline scheduling constraints must satisfy the
+following equation:
+
+  realtime scheduling bandwith + deadline scheduling bandwidth <= 100%
+
+Any bandwidth not reserved for realtime- and deadline-scheduled tasks
+is left for other running tasks.
+
+Both scheduling classes mentioned above have a specified "runtime" and
+a specified "period".  ((runtime * 100) / period) represents the
+percentage of CPU time allocated to that scheduling class.  All
+runtime and period values are expressed in microseconds.  The default
+period for both deadline and realtime scheduling is 1 second
+(1,000,000 us).  The default runtime for realtime tasks is 0.95
+seconds (950,000 us).  The default runtime for deadline tasks is the
+remaining 0.05 seconds (50,000 us).
+
+Any bandwidth allocation change requires that the resulting
+configuration is valid, i.e., that the equation above is satisfied.
+Therefore when changing bandwidth allocations it is necessary to be
+careful about the order.
+
+When changing global settings in /proc/sys/kernel/, the kernel checks
+that the resulting changes can be applied against any outstanding task
+group bandwidth allocations.  As a result, you can't lower the global
+bandwidth in /proc/sys/kernel/ if existing task groups have been
+assigned more than the new amount.  Since by default systems only have
+one task group and since that task group inherits the global bandwidth
+allocations, we have to lower them before we can lower the global
+settings in /proc/sys/kernel/.
+
+Since the deadline scheduling bandwidth cannot be increased until the
+realtime bandwidth has been lowered to compensate, we have to lower
+the global realtime bandwidth before we can increase the deadline
+bandwidth.

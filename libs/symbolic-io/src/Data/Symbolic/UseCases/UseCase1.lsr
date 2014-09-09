@@ -1,0 +1,20 @@
+//------------------------------------------------------------------------------
+// To compile this program (in this directory)
+//      lobster -I Prelude.lsr UseCase1.lsr
+//
+// or
+//      make UseCase1.fc
+//
+//------------------------------------------------------------------------------
+
+class UseCase1 ( readFile, writeFile) {
+  domain p = Process();
+  type X;
+  type Y;
+  domain r = SimpleFile ( X, readFile );
+  domain w = SimpleFile ( Y, writeFile );
+  p.active <--  r.read;
+  p.active -->  w.write;
+}
+
+domain app = UseCase1 ( "rf", "wf" );

@@ -1,0 +1,21 @@
+INPUT: ex20.lsr
+class C1() {
+  port p1 : { position = subject  } ;
+}
+
+class C0() {
+  port p0 : { position = object } ;
+}
+
+domain c1 = C1() ;
+domain c0 = C0() ;
+c1.p1 <--> c0.p0 ;
+
+OUTPUT: ex20.lsr
+module.te: ex20.lsr
+policy_module(module,1.0)
+type c0_t;
+type c1_t;
+allow c1_t c0_t:c0 p0;
+module.fc: ex20.lsr
+

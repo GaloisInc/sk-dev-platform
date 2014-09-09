@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mkdir -p /cgroup/cpu
+mount -t cgroup -o cpu none /cgroup/cpu
+
+if [ -e /sk/boot.sh ]
+then
+    cd /sk
+    sh boot.sh
+fi

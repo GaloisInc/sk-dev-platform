@@ -1,0 +1,4 @@
+config BR2_TARGET_ROOTFS_EXT3
+	bool "ext3 root filesystem"
+	help
+	  Build an ext3 root filesystem

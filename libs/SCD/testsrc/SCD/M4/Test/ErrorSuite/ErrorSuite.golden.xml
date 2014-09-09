@@ -1,0 +1,261 @@
+<?xml version='1.0' ?>
+<shrimp>
+  <warnings>
+    <duplicate_access_vector_def>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="error_class_one" line="115" col="7" start_offset="1534" end_offset="1549" />
+      <defined_at>
+        <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="error_class_one" line="114" col="7" start_offset="1497" end_offset="1512" />
+      </defined_at>
+    </duplicate_access_vector_def>
+    <duplicate_class_permission>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="read" line="120" col="32" start_offset="1706" end_offset="1710" />
+    </duplicate_class_permission>
+    <duplicate_common_def>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="error_common_def" line="10" col="8" start_offset="255" end_offset="271" />
+      <defined_at>
+        <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="error_common_def" line="9" col="8" start_offset="216" end_offset="232" />
+      </defined_at>
+    </duplicate_common_def>
+    <duplicate_common_permission>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="read" line="15" col="36" start_offset="442" end_offset="446" />
+    </duplicate_common_permission>
+    <duplicate_definitions>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="error_duplicate_def" line="68" col="12" start_offset="1764" end_offset="1783" />
+    </duplicate_definitions>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorstwo.te" name="errors" line="6" col="15" start_offset="290" end_offset="296" />
+      <warnings>
+        <duplicate_identifier>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorstwo.te" name="errors" line="6" col="15" start_offset="290" end_offset="296" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="errors" line="1" col="15" start_offset="14" end_offset="20" />
+          </defined_at>
+        </duplicate_identifier>
+      </warnings>
+    </in_implementation>
+    <duplicate_macro_def>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/obj_perm_sets.spt" name="dup_macro_def" line="10" col="9" start_offset="325" end_offset="338" />
+      <defined_at>
+        <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/obj_perm_sets.spt" name="dup_macro_def" line="9" col="9" start_offset="283" end_offset="296" />
+      </defined_at>
+    </duplicate_macro_def>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="errors" line="1" col="15" start_offset="14" end_offset="20" />
+      <warnings>
+        <duplicate_symbol_decl>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="duplicate_symbol_decl_t" line="7" col="6" start_offset="113" end_offset="136" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="duplicate_symbol_decl_t" line="6" col="6" start_offset="83" end_offset="106" />
+          </defined_at>
+        </duplicate_symbol_decl>
+        <duplicate_symbol_decl>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="duplicate_identifier_t" line="12" col="11" start_offset="206" end_offset="228" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="duplicate_identifier_t" line="11" col="11" start_offset="172" end_offset="194" />
+          </defined_at>
+        </duplicate_symbol_decl>
+      </warnings>
+    </in_implementation>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <fragment_kind_error>
+          <expected_kind>
+            <kind name="domain_" />
+          </expected_kind>
+          <got_complex_param>
+            <complex_param_comp value="-undefined_type">
+              <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="undefined_type" line="33" col="34" start_offset="811" end_offset="825" />
+            </complex_param_comp>
+          </got_complex_param>
+        </fragment_kind_error>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <illegal_fragment>
+          <fragment_text value="domain_trans" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/misc_patterns.spt" name="$1domain_trans" line="11" col="35" start_offset="333" end_offset="347" />
+          </defined_at>
+        </illegal_fragment>
+      </warnings>
+    </in_definition>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="errors" line="1" col="15" start_offset="14" end_offset="20" />
+      <warnings>
+        <illegal_macro_use>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="domain_trans" line="16" col="6" start_offset="307" end_offset="319" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/misc_patterns.spt" name="domain_trans" line="24" col="9" start_offset="712" end_offset="724" />
+          </defined_at>
+        </illegal_macro_use>
+      </warnings>
+    </in_implementation>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="errors" line="1" col="15" start_offset="14" end_offset="20" />
+      <warnings>
+        <illegal_parameter_use>
+          <illegal_parameter index="1">
+            <kind name="type_" />
+          </illegal_parameter>
+        </illegal_parameter_use>
+      </warnings>
+    </in_implementation>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <illegal_symbol_decls>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="$1" line="46" col="14" start_offset="1297" end_offset="1299" />
+        </illegal_symbol_decls>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="another_placeholder_interface">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorsthree.if" name="another_placeholder_interface" line="18" col="12" start_offset="325" end_offset="354" />
+      <warnings>
+        <illegal_symbol_ref>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorsthree.if" name="valid_type_t" line="24" col="22" start_offset="554" end_offset="566" />
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="valid_type_t" line="3" col="6" start_offset="34" end_offset="46" />
+          </defined_at>
+        </illegal_symbol_ref>
+      </warnings>
+    </in_definition>
+    <missing_access_vector_def>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/security_classes" name="error_class_two" line="6" col="7" start_offset="77" end_offset="92" />
+    </missing_access_vector_def>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorstwo.te" name="errors" line="6" col="15" start_offset="290" end_offset="296" />
+      <warnings>
+        <module_id_mismatch>
+          <file_base_name name="errorstwo" />
+          <module_name name="errors" />
+        </module_id_mismatch>
+      </warnings>
+    </in_implementation>
+    <mutually_recursive>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="mutrec_iface" line="8" col="12" start_offset="190" end_offset="202" />
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errorsthree.if" name="mutrec_other_iface" line="9" col="12" start_offset="163" end_offset="181" />
+    </mutually_recursive>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <ref_policy_warn_call>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="stat_file_perms" line="49" col="59" start_offset="1394" end_offset="1409" />
+          <warning_text>$0 is deprecated please use getattr_file_perms instead.</warning_text>
+        </ref_policy_warn_call>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <kind_mismatch>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="file_class_set" line="29" col="43" start_offset="718" end_offset="732" />
+          <expected_kind>
+            <kind name="permission" />
+          </expected_kind>
+          <got_kinds>
+            <kind name="class" />
+            <kind name="sid" />
+          </got_kinds>
+        </kind_mismatch>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <undefined_macro>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="this_macro_is_undefined" line="52" col="9" start_offset="1450" end_offset="1473" />
+        </undefined_macro>
+      </warnings>
+    </in_definition>
+    <undefined_common_id>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/flask/access_vectors" name="invalid_common_name" line="123" col="33" start_offset="1774" end_offset="1793" />
+    </undefined_common_id>
+    <undefined_identifier>
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/obj_perm_sets.spt" name="undefined_perms" line="12" col="40" start_offset="399" end_offset="414" />
+    </undefined_identifier>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <undefined_identifier>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="undefined_t" line="42" col="27" start_offset="1151" end_offset="1162" />
+        </undefined_identifier>
+        <undefined_identifier>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="undefined_type_t" line="24" col="22" start_offset="517" end_offset="533" />
+        </undefined_identifier>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <undefined_identifiers>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="undefined_t" line="42" col="27" start_offset="1151" end_offset="1162">
+            <kind name="type/attribute" />
+          </marker>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="undefined_t" line="42" col="15" start_offset="1139" end_offset="1150">
+            <kind name="domain" />
+          </marker>
+        </undefined_identifiers>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <undocumented_parameters>
+          <param_info optional="false">
+            <kind name="type" />
+          </param_info>
+        </undocumented_parameters>
+      </warnings>
+    </in_definition>
+    <in_implementation layer="test" module="errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="errors" line="1" col="15" start_offset="14" end_offset="20" />
+      <warnings>
+        <unknown_ifdef_id>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.te" name="unknown_symbol" line="22" col="8" start_offset="384" end_offset="398" />
+        </unknown_ifdef_id>
+      </warnings>
+    </in_implementation>
+    <in_definition macro_name="domain_unused_parameters">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/misc_patterns.spt" name="domain_unused_parameters" line="14" col="9" start_offset="433" end_offset="457" />
+      <warnings>
+        <unused_parameters>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/misc_patterns.spt" name="domain_unused_parameters" line="14" col="9" start_offset="433" end_offset="457" />
+          <param_info optional="false">
+            <kind name="type/attribute" />
+            <kind name="domain" />
+          </param_info>
+          <param_info optional="false">
+            <kind name="any" />
+          </param_info>
+          <param_info optional="false">
+            <kind name="type/attribute" />
+          </param_info>
+        </unused_parameters>
+      </warnings>
+    </in_definition>
+    <in_definition macro_name="various_errors">
+      <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="various_errors" line="21" col="12" start_offset="425" end_offset="439" />
+      <warnings>
+        <wrong_number_of_arguments>
+          <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/modules/test/errors.if" name="domain_trans" line="39" col="9" start_offset="1044" end_offset="1056">
+            <param_info optional="false">
+              <kind name="domain" />
+            </param_info>
+            <param_info optional="false">
+              <kind name="type/attribute" />
+            </param_info>
+            <param_info optional="false">
+              <kind name="type/attribute" />
+            </param_info>
+          </marker>
+          <defined_at>
+            <marker file="/Users/jstanley/svn/scd/SCD/src/SCD/M4/Test/ErrorSuite/policy/support/misc_patterns.spt" name="domain_trans" line="24" col="9" start_offset="712" end_offset="724" />
+          </defined_at>
+        </wrong_number_of_arguments>
+      </warnings>
+    </in_definition>
+  </warnings>
+</shrimp>

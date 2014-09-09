@@ -1,0 +1,177 @@
+Name:                scd
+Version:             0.1
+Description:         Security Configuration DSL library
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Custom
+Cabal-Version:       >= 1.8
+Extra-source-files: checkpolicy/ChangeLog,
+                    checkpolicy/checkmodule.8,
+                    checkpolicy/checkmodule.c,
+                    checkpolicy/checkpolicy.8,
+                    checkpolicy/checkpolicy.c,
+                    checkpolicy/checkpolicy.h,
+                    checkpolicy/COPYING,
+                    checkpolicy/Makefile,
+                    checkpolicy/module_compiler.c,
+                    checkpolicy/module_compiler.h,
+                    checkpolicy/parse_util.c,
+                    checkpolicy/parse_util.h,
+                    checkpolicy/policy_define.c,
+                    checkpolicy/policy_define.h,
+                    checkpolicy/policy_parse.y,
+                    checkpolicy/policy_scan.l,
+                    checkpolicy/queue.c,
+                    checkpolicy/queue.h,
+                    checkpolicy/VERSION
+
+Library
+  Build-Depends:     array >= 0.1.0.0,
+                     base >= 4,
+                     bytestring >= 0.9.0.1,
+                     containers >= 0.1.0.0,
+                     directory >= 1.1,
+                     filepath >= 1.1.0.0 && <= 1.2.0.0,
+                     fgl >= 5,
+                     lobster >= 0.1,
+                     mtl >= 1,
+                     pretty >= 1.1,
+                     process >= 1.1,
+                     random >= 1,
+                     regex-compat >= 0.71.0.1,
+                     regex-posix >= 0.71,
+                     syb >= 0.1.0.0,
+                     xml >= 1.3.2
+                     -- ^ can be removed when bnfc is updated for Data.Char
+
+  Exposed-modules:
+      -- SCD.SELinux: syntax, parsing, prettyprinting of the native policy language
+                     SCD.SELinux.Syntax
+                     SCD.SELinux.PrettyPrint
+                     SCD.SELinux.Lexer
+                     SCD.SELinux.Parser
+                     SCD.SELinux.Monad
+
+      -- candidates for spin-off into one or more separate packages:
+                     Text.Happy.ParserMonad
+                     Text.PrettyPrint.Pp
+                     Text.ParserCombinators.PolyReadP
+                     Data.HeadTail
+                     Data.Memo
+                     Data.MapSet
+                     Data.Strict
+                     Data.NonEmptyList
+                     Data.List.GroupSort
+
+      -- SCD.Lobster: utilities for interfacing with the Lobster language
+                     SCD.Lobster.Utilities
+                     SCD.Lobster.Util
+
+      -- SCD.M4: syntax, parsing, prettyprinting of the Reference Policy language
+                     SCD.M4.Lexer
+                     SCD.M4.Syntax
+                     SCD.M4.Parser
+
+      -- Global configuration options shared by HTML generator and kind checker.
+                     SCD.M4.Options
+                     SCD.M4.PrettyPrint
+                     SCD.M4.Dependencies
+
+      -- Relational semantics for the native policy
+                     SCD.SELinux.Symbol
+                     SCD.SELinux.Authorize
+      -- SCD.Shrimp: shallow embedding of the reference policy into Haskell (not maintained)
+                     SCD.Shrimp.Shrimp
+      -- example module translated by hand from the reference policy
+                     SCD.Shrimp.RefPolicy.Modules.Services.Dbus
+      -- Syntactic check for type declarations inside interfaces (not currently used)
+                     SCD.M4.CheckTypeStmt
+      -- Knowledge about what support files etc we should parse and analyze
+                     SCD.M4.ModuleFiles
+      -- Kind checker (this is where the analysis happens in shrimp)
+                     SCD.M4.KindCheck
+                     SCD.M4.KindCheckPolicy
+                     SCD.M4.Kind
+                     SCD.M4.KindInfo
+                     SCD.M4.Errors
+                     SCD.M4.ErrorsXml
+      -- Quick and dirty Lobster generation from Shrimp
+                     SCD.M4.QuickLobster
+                     SCD.M4.Util
+                     SCD.M4.XML
+      -- Printing of identifiers with positions
+                     SCD.M4.PShow
+      -- Generator of HTML documentation
+                     SCD.M4.HTML
+      -- Testing
+                     -- SCD.M4.Test.Dependencies
+                     -- SCD.M4.Test.ErrorSuite
+                     -- SCD.M4.Test.HTML
+                     -- SCD.M4.Test.KindCheck
+                     -- SCD.M4.Test.Parser
+                     -- SCD.M4.Test.QuickLobster
+
+                     -- SCD.SELinux.Test.Authorize
+                     -- SCD.SELinux.Test.Parser
+                     -- SCD.SELinux.Test.Symbol
+
+
+  -- This is a sledgehammer: not all modules use CPP, but this appears to be
+  -- necessary to get any module CPP:ed before shipping it to haddock.
+  extensions:        CPP, Generics
+  hs-source-dirs:    src
+  ghc-options:       -auto-all
+
+
+Executable tests
+  Main-is:           SCD/Test/All.hs
+  hs-source-dirs:    testsrc
+  ghc-options:       -Wall -auto-all
+  extensions:        CPP, Generics
+--  ghc-options:       -Wall -auto-all -prof -osuf p_o
+  Build-depends:     array >= 0.1.0.0,
+                     base >= 4.0 && < 5.0,
+                     containers >= 0.1.0.0,
+                     directory >= 1.1,
+                     filepath >= 1.1,
+                     mtl >= 1.0.1,
+                     pretty >= 1.1,
+                     process >= 1.1,
+                     QuickCheck >= 2.2 && < 2.4,
+                     random >= 1.0.0.0,
+                     regex-compat >= 0.71.0.1,
+                     regex-posix >= 0.71,
+                     syb >= 0.1.0.0,
+                     xml >= 1.3.2,
+
+                     test-framework,
+                     test-framework-hunit,
+                     test-framework-quickcheck2 == 0.2.8,
+                     HUnit >= 1.2.2.1,
+
+                     scd >= 0.1,
+                     lobster >= 0.1
+
+-- Executable  qlobster {
+-- extensions: CPP
+-- Main-is:             SCD/M4/QuickMain.hs
+-- hs-source-dirs:      src
+-- ghc-options:         -idist/build -main-is SCD.M4.QuickMain.main
+-- }
+
+-- Executable  gen-lobster {
+-- Main-is:             SCD/Lobster/Gen/Main.hs
+-- hs-source-dirs:      src,src/SCD/Lobster/Gen
+-- ghc-options:         -idist/build
+
+-- }
+
+-- Executable  lobster-gen-prelude {
+-- Main-is:             SCD/Lobster/GenPrelude.hs
+-- hs-source-dirs:      src
+-- ghc-options:         -idist/build
+
+-- }
+

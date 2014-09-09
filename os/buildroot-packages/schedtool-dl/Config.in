@@ -1,0 +1,8 @@
+config BR2_PACKAGE_SCHEDTOOL_DL
+	bool "schedtool-dl"
+        depends on BR2_PACKAGE_LIBDEADLINE
+	help
+	  Modified 'schedtool' program for use with the Linux deadline
+	  scheduler
+
+          http://gitorious.org/sched_deadline/schedtool-dl

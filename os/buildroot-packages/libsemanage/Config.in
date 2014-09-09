@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBSEMANAGE
+	bool "libsemanage"
+        depends on BR2_PACKAGE_USTR
+	help
+	  libsemanage
+
+          http://userspace.selinuxproject.org/trac

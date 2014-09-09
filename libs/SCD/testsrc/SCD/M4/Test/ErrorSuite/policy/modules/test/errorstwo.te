@@ -1,0 +1,12 @@
+# Since we already have an errors module defined in errors.{te,if,fc},
+# this will raise the DuplicateIdentifier error.  Additionally, it
+# should raise the ModuleIdMismatch error due to the file base name
+# (errorstwo) being mismatched from the stated module name (errors).
+
+policy_module(errors,1.0.0)
+
+type dummy_type_t;
+
+
+
+

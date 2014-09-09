@@ -1,0 +1,21 @@
+Handle each direction (type of connection) correctly
+
+Get rid of moniker of LobsterAST, which means we don't need this type anymore.
+
+Remove any assumptions about the p.active port? Possibly remove hardwiring of this name?
+
+Consolidate connectionTo, connectionFrom, connectionOfFile
+
+Consolidtate transformToConnection, transformFromConnection, transformToInternal, transfromFromInternal, transformFromConnection, transformInternal
+
+Make most of processing of files and processes in common, for *resources*
+
+Distinguish special purpose processing of processes
+
+Get rid of Tree module here, use Data.Tree
+
+Implement a tree of policies
+
+Investigate zipper structure for the tree of policies.
+
+Make munge, mungeFiles, mungeProcesses more elegant.

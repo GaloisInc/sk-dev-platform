@@ -1,0 +1,6 @@
+utils/chkcon
+src/libsepol.a
+src/libsepol.pc
+src/libsepol.so
+src/libsepol.so.1
+

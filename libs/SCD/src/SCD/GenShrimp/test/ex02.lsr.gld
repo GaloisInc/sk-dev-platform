@@ -1,0 +1,8 @@
+INPUT: ex02.lsr
+port x;
+
+OUTPUT: ex02.lsr
+module.te: ex02.lsr
+policy_module(module,1.0)
+module.fc: ex02.lsr
+

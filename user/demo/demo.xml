@@ -1,0 +1,16 @@
+<layout bandwidth="90">
+
+  <channel name="middle" msgsize="4136" slots="4" from="cell1" to="cell2" />
+
+  <channel name="from_disk2" msgsize="4136" slots="4" from="disk2" to="cell2" />
+  <channel name="to_disk2" msgsize="4136" slots="4" from="cell2" to="disk2" />
+
+  <channel name="from_disk1" msgsize="4136" slots="4" from="disk1" to="cell1" />
+  <channel name="to_disk1" msgsize="4136" slots="4" from="cell1" to="disk1" />
+
+  <cell name="disk1" program="disk1" user="root" runtime="20000" period="100000" />
+  <cell name="cell1" program="cell1" user="root" runtime="30000" period="100000" />
+  <cell name="cell2" program="cell2" user="root" runtime="30000" period="100000" />
+  <cell name="disk2" program="disk2" user="root" runtime="10000" period="100000" />
+
+</layout>

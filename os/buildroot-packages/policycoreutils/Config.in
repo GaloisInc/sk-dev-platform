@@ -1,0 +1,9 @@
+config BR2_PACKAGE_POLICYCOREUTILS
+	bool "policycoreutils"
+        depends on BR2_PACKAGE_LIBSEPOL && BR2_PACKAGE_LIBSELINUX && BR2_PACKAGE_LIBCAP_NG && BR2_PACKAGE_LIBSEMANAGE
+        select BR2_PACKAGE_GETTEXT if BR2_NEEDS_GETTEXT
+        select BR2_PACKAGE_LIBGLIB2
+	help
+	  SELinux policy utilities
+
+          http://userspace.selinuxproject.org/trac

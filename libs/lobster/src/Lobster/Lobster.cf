@@ -1,0 +1,79 @@
+Policy . Policy ::= [Statement] ;
+
+ClassDeclaration . Statement ::= "class" ClassId "(" [Identifier] ")" "{" [Statement] "}" ;
+PortDeclaration . Statement ::= "port" PortId PortDeclarationType PortDeclarationConnection ";" ;
+DomainDeclaration . Statement ::= "domain" Identifier "=" ClassInstantiation ";" ;
+Assignment . Statement ::= Identifier "=" Expression ";" ;
+PortConnection . Statement ::= [Expression] Connection [Expression] ";" ;
+Assert . Statement ::= "assert" ConnRE "->" ConnRE "::" FlowPred ";" ;
+
+ClassInstantiation . ClassInstantiation ::= ClassId "(" [Expression] ")" ;
+
+ConnRE . ConnRE ::= "[" DomainSpec PortRE "]" ;
+
+ThisDom . DomainSpec ::= "this" ;
+IdentDom . DomainSpec ::= Identifier ;
+
+AnyPRE . PortRE ::= ".*" ;
+IdPRE . PortRE ::= "." Identifier ;
+
+NeverPathFP . FlowPred ::= "never" ;
+ExistsPathFP . FlowPred ::= "exists" ;
+PathFP . FlowPred ::= FlowRE ;
+
+ConsF . FlowRE ::= FlowRE0 ConnRE FlowRE ;
+_ . FlowRE ::= FlowRE0 ;
+
+AnyFRE . FlowRE0 ::= ".*" ;
+
+EmptyPDT . PortDeclarationType ::= ;
+PortTypePDT . PortDeclarationType ::= ":" "{" [PortTypeConstraint] "}" ;
+
+EmptyPDC . PortDeclarationConnection ::= ;
+Connection . PortDeclarationConnection ::= Connection [Expression] ;
+
+IntExpression . Expression ::= Integer ;
+StringExpression . Expression ::= String ;
+DirectionExpression . Expression ::= Direction ;
+PositionExpression . Expression ::= Position ;
+QualNameExpression . Expression ::= QualName ;
+ParenExpression  . Expression ::= "(" Expression ")" ;
+
+InputDirection . Direction ::= "input" ;
+OutputDirection . Direction ::= "output" ;
+BidirectionalDirection . Direction ::= "bidirectional" ;
+
+SubjectPosition . Position ::= "subject" ;
+ObjectPosition . Position ::= "object" ;
+
+UnQual . QualName ::= Name ;
+Qual . QualName ::= QualName "." Name ;
+
+TypeIdent . Name ::= ClassId ;
+Ident . Name ::= Identifier ;
+
+PortTypeConstraint . PortTypeConstraint ::= FlowId "=" NoneExpression ;
+
+NoneE . NoneExpression ::= "*" ;
+SomeE . NoneExpression ::= Expression ;
+
+BidirectionalConnection . Connection ::= "<-->" ;
+LeftToRightConnection . Connection ::= "-->" ;
+RightToLeftConnection . Connection ::= "<--" ;
+NeutralConnection . Connection ::= "--" ;
+
+Identifier . Identifier ::= LIdent ;
+PortId . PortId ::= LIdent ;
+FlowId . FlowId ::= LIdent ;
+ClassId . ClassId ::= UIdent ;
+
+separator Identifier "," ;
+separator Expression "," ;
+separator Statement "" ;
+separator PortTypeConstraint "," ;
+
+token LIdent (lower (letter | digit | '_')*) ;
+token UIdent (upper (letter | digit | '_')*) ;
+
+comment "//" ;
+comment "/*" "*/" ;

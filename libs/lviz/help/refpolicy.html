@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>Reference Policy Background</title>
+</head>
+<body>
+<h1>Reference Policy Notes<br>
+</h1>
+<h2>Purpose</h2>
+The purpose of this page is to give a quick overview of the SELinux
+Reference Policy flow to SELinux permission set.&nbsp; Full details of
+SELinux can be found at the <a
+ href="http://www.nsa.gov/research/selinux/index.shtml">NSA's SELinux
+site.</a><br>
+<h2>Overview<br>
+</h2>
+SELinux (Security Enchanced Linux) is a Linux security enforcement
+mechanism which can be applied to Unix like operating
+systems.&nbsp;&nbsp;&nbsp;&nbsp; SELinux was developed by the NSA and
+released into public domain December 2000.&nbsp;&nbsp; Although SELinux
+is effective in securing communications paths in a Linux system, the
+rules required to lock down a complex operating system are dauntingly
+large.&nbsp;&nbsp; Understanding how to modify the rules to allow for
+the introduction of applications or changes to the OS is a huge
+challenge.&nbsp; <br>
+<br>
+To address the complexity issue, Tresys modularlized the standard
+policy and separated the rules into multiple different files which have
+some degree of isolation from each other.&nbsp; This revised policy is
+called the "Reference Policy"&nbsp; The relationship between the
+Reference Policy an SELinux low level rules is illustrated in Figure 1.<br>
+<br>
+<img style="width: 798px; height: 73px;" alt="" src="RefVsNative.jpg"><br>
+<br>
+<span style="font-weight: bold;">Figure 1: Reference Policy Flow to
+SELinux Permission Set<br>
+<br>
+</span>Information flow controls are defined by defining types, then
+stating allowable interactions through "allow statements". Each allow
+statement defines the relationship between a subject and object node
+along with the conditions of that relationship:<br>
+<code style="font-family: Times New Roman,Times,serif;">allow
+subject_type object_type action_allowed;<br>
+<br>
+With types of the form </code><span
+ style="font-family: Times New Roman,Times,serif;">user_identity:role:type</span><br>
+<span style="font-weight: bold;"></span><br>
+Example SELinux native policy statements.
+<table style="text-align: left; width: 519px; height: 118px;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><code>allow application_t
+lib_t:dir {
+getattr search };<br>
+allow application_t ld_so_t:file { getattr read execute ioctl };<br>
+allow application_t usr_t:dir { getattr search read lock ioctl };<br>
+allow application_t syslogd_t:unix_dgram_socket sendto;<br>
+allow application_t syslogd_t:unix_stream_socket connectto;</code></td>
+    </tr>
+  </tbody>
+</table>
+<h2>Notes</h2>
+SELinux adds another layer of access control permissions on top of
+standard file permission and ACLs, which are defined by the system
+security policy. Every object (files and other items) ad every subject
+security (process) has security context, with three attributes &#8211; a User
+Identity , a role and a type. Collectively, these attributes limit the
+authority of the subject over the object, Typically , the security
+context is displayed as a colon-separated triplet in this format
+<p>user_identity:role:type<br>
+</p>
+<hr style="width: 100%; height: 2px;">When SELinux is enabled, there
+are two modes:
+<p>1. Permissive or 2. Enforcing</p>
+<p>Permissive mode is the &#8216;warn&#8217; only mode. That is, it allows all
+process access to the file system using standard DAC, but it will log
+all access violations that would have been there, if SELinux has been
+in the enforcing mode in /var/log/messages.</p>
+<p>The Enforcing mode allows SELinux to control access to the system
+using MAC, and thus enforces the SELinux policy. These modes can be
+controlled dynamically using the setenforce command, and can be
+permemently set in the file /etc/sysconfig/selinux<br>
+</p>
+<hr style="width: 100%; height: 2px;">
+<ul>
+  <li>
+    <p> <code class="command">SELINUXTYPE=<code class="option">targeted|strict</code></code>
+&#8212; Specifies which policy SELinux should enforce. </p>
+    <div class="itemizedlist">
+    <ul>
+      <li>
+        <p> <code class="option">targeted</code> &#8212; Only targeted
+network daemons are protected. </p>
+        <p> Policy enforcement for these daemons can be turned on or
+off, using Boolean values controlled by the <span><strong
+ class="application">SELinux Administration Tool</strong></span> (<code
+ class="command">system-config-selinux</code>). </p>
+        <p> Setting a Boolean value for a targeted daemon to <code
+ class="option">0</code> (zero) disables policy transition for the
+daemon. For example, you can set <code class="option">dhcpd_disable_trans</code>
+to <code class="option">0</code> to prevent <code class="command">init</code>
+from transitioning <code class="command">dhcpd</code> from the <span
+ class="property">unconfined_t</span> domain to the domain specified in
+        <code class="filename">dhcpd.te</code>. </p>
+        <p> Use the <code class="command">getsebool -a</code> command
+to list all SELinux booleans. The following is an example of using the <code
+ class="command">setsebool</code> command to set an SELinux boolean.
+The <code class="option">-P</code> option makes the change permanent.
+Without this option, the boolean would be reset to <code class="option">1</code>
+at reboot. </p>
+        <pre class="screen">setsebool -P dhcpd_disable_trans=0<br></pre>
+      </li>
+      <li>
+        <p> <code class="command">strict</code>
+&#8212; Full SELinux protection, for all daemons. Security contexts are
+defined for all subjects and objects, and every action is processed by
+the policy enforcement server.<br>
+        </p>
+      </li>
+    </ul>
+    </div>
+  </li>
+</ul>
+<hr style="width: 100%; height: 2px;"><br>
+<br>
+<br>
+<h2>Reference</h2>
+<ul>
+  <li><a href="http://blog.supportpro.com/2007/08/se-linux/"
+ rel="bookmark">SE Linux</a> background at
+http://blog.supportpro.com/2007/08/se-linux/</li>
+  <li><a
+ href="http://www.redhat.com/docs/manuals/enterprise/RHEL-5-manual/Deployment_Guide-en-US/s3-SELinux-files-etc-sysconfig-selinux.html">RedHat
+SELinux Manual </a>- has a great introduction to SELinux</li>
+  <li>&nbsp;<a href="http://www.nsa.gov/selinux/">http://www.nsa.gov/selinux/</a>
+Homepage for the NSA SELinux development team. Many resources are
+available in HTML and PDF formats. Although many of these links are not
+SELinux specific, some concepts may apply.</li>
+  <li>&nbsp;<a href="http://fedora.redhat.com/docs/">http://fedora.redhat.com/docs/</a>
+Homepage for the Fedora documentation project, which contains Fedora
+Core specific materials that may be more timely, since the release
+cycle is much shorter.</li>
+  <li><a href="http://selinux.sourceforge.net/">http://selinux.sourceforge.net</a>
+Homepage for the SELinux community. </li>
+</ul>
+<div class="itemizedlist"> <br>
+</div>
+<br>
+<br>
+</body>
+</html>

@@ -1,0 +1,18 @@
+INPUT: ex16.lsr
+class Process() {
+  port active : { position = subject };
+}
+
+class XClass() {
+  port p;
+  domain proc = Process();
+  proc.active -- p;
+}
+
+domain x = XClass();
+OUTPUT: ex16.lsr
+module.te: ex16.lsr
+policy_module(module,1.0)
+type x_proc_t;
+module.fc: ex16.lsr
+

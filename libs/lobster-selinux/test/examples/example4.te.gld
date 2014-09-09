@@ -1,0 +1,17 @@
+policy_module(test/examples/example4,1.0)
+gen_require(`type etc_t;')
+type f_t;
+type a_t_t;
+type a_p_t;
+type a_f_t;
+type b_t_t;
+type b_p_t;
+type b_f_t;
+allow etc_t f_t:file read;
+role unconfined_r types b_p_t;
+type_transition etc_t b_f_t:process b_p_t;
+allow etc_t b_p_t:process transition;
+allow etc_t b_f_t:file execute;
+allow etc_t b_f_t:file getattr;
+allow etc_t b_f_t:file read;
+allow a_p_t etc_t:file write;

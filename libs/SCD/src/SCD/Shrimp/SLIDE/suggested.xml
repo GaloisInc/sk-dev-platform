@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (C) 2006 Tresys Technology, LLC -->
+
+
+<!-- later we will put definition in its own dtd file-->
+<!DOCTYPE shrimp [
+	<!ELEMENT marker EMPTY>
+	<!ELEMENT missing_param (#PCDATA)>
+	<!ATTLIST marker
+		file CDATA #REQUIRED
+		name CDATA #REQUIRED
+		line CDATA #REQUIRED
+		start_char CDATA #REQUIRED
+	>
+	<!ELEMENT defined_at (marker)>
+	<!ELEMENT warning ((marker+)|(marker,defined_at) | (missing_param,marker+) | (marker+,missing_param+,defined_at))>
+	<!ATTLIST warning 
+		type CDATA #REQUIRED
+		macro_name CDATA #IMPLIED
+	>
+	<!ELEMENT shrimp (warning+)>
+	]>
+
+<!--End of definition-->
+
+<shrimp>
+	
+	<!--
+	In definition of rpc_stub (devel/refpolicy/policy/modules/services/rpc.if:13/12):
+    Unused parameters (with kind {any}) in (domain : {any})
+	-->
+	<warning type="unused_parameters" macro_name="rpc_stub">
+		<marker file="devel/refpolicy/policy/modules/services/rpc.if" name="domain" line="13" start_char="12"/>
+	</warning>
+	
+
+	<!--
+	In implementation of system/pcmcia (devel/refpolicy/policy/modules/system/pcmcia.te:2/15):
+    Illegal symbol reference across modules: cardmgr_dev_t (devel/refpolicy/policy/modules/system/pcmcia.te:140/87)
+        is defined at cardmgr_dev_t (devel/refpolicy/policy/modules/kernel/devices.te:35/6)
+	-->
+	<warning type="out_of_scope">
+		<marker file="devel/refpolicy/policy/modules/system/pcmcia.te" name="cardmgr_dev_t" line="140" start_char="87"/>
+		<defined_at>
+			<marker file="devel/refpolicy/policy/modules/kernel/devices.te" name="cardmgr_dev_t" line="35" start_char="6"/>
+		</defined_at>
+	</warning>
+	
+	<!--
+	In definition of virt_admin (devel/refpolicy/policy/modules/services/virt.if:243/12):
+    Call to undefined macro: virt_manage_pid_files (devel/refpolicy/policy/modules/services/virt.if:251/9)
+	-->
+	<warning type="undefined_macro">
+		<marker file="devel/refpolicy/policy/modules/services/virt.if" name="virt_admin" line="251" start_char="9"/>
+	</warning>
+	
+	<!--
+		In implementation of system/pcmcia (devel/refpolicy/policy/modules/system/pcmcia.te:2/15):
+    Undefined identifiers (need to be declared or put in require block): cardmgr_dev_t: type (devel/refpolicy/policy/modules/system/pcmcia.te:140/87)
+                                                                         tmp_t: type/attribute (devel/refpolicy/policy/modules/system/pcmcia.te:140/57)
+                                                                         var_run_t: type/attribute (devel/refpolicy/policy/modules/system/pcmcia.te:140/29)
+		-->
+	<warning type="undefined_identifiers">
+		<marker file="devel/refpolicy/policy/modules/system/pcmcia.te" name="cardmgr_dev_t" line="140" start_char="87"/>
+		<marker file="devel/refpolicy/policy/modules/system/pcmcia.te" name="tmp_t" line="140" start_char="57"/>
+		<marker file="devel/refpolicy/policy/modules/system/pcmcia.te" name="var_run_t" line="140" start_char="29"/>
+	</warning>
+
+	<!--
+In definition of xserver_common_domain_template (devel/refpolicy/policy/modules/services/xserver.if:15/11):
+    Undefined identifiers (need to be declared or put in require block): rootwindow_type: attribute (devel/refpolicy/policy/modules/services/xserver.if:33/31)
+                                                                         x_client: class (devel/refpolicy/policy/modules/services/xserver.if:210/66)
+                                                                         x_cursor: class (devel/refpolicy/policy/modules/services/xserver.if:209/45)
+                                                                         x_device: class (devel/refpolicy/policy/modules/services/xserver.if:211/65)
+                                                                         x_event: class (devel/refpolicy/policy/modules/services/xserver.if:214/50)
+                                                                         x_extension: class (devel/refpolicy/policy/modules/services/xserver.if:212/52)
+                                                                         x_gc: class (devel/refpolicy/policy/modules/services/xserver.if:205/45)
+                                                                         x_property: class (devel/refpolicy/policy/modules/services/xserver.if:207/51)
+                                                                         x_resource: class (devel/refpolicy/policy/modules/services/xserver.if:213/65)
+                                                                         x_selection: class (devel/refpolicy/policy/modules/services/xserver.if:208/52)
+                                                                         x_server: class (devel/refpolicy/policy/modules/services/xserver.if:202/52)
+                                                                         x_synthetic_event: class (devel/refpolicy/policy/modules/services/xserver.if:214/58)
+	-->
+	<warning type="undefined_identifiers" macro_name="xserver_common_domain_template">
+	<!--In case of interface(global) it can be one file with mulitple
+		interfaces and multiple references in each interface-->
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="rootwindow_type" line="33" start_char="31"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_client_t" line="210" start_char="66"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_cursor" line="209" start_char="45"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_device" line="211" start_char="65"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_event" line="214" start_char="50"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_extension" line="212" start_char="52"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_gc" line="205" start_char="45"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_property" line="207" start_char="51"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_resource" line="213" start_char="65"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_selection" line="208" start_char="52"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_server" line="202" start_char="52"/>
+		<marker file="devel/refpolicy/policy/modules/services/xserver.if" name="x_synthetic_event" line="214" start_char="58"/>
+	</warning>
+	
+	
+	<!--
+		In implementation of roles/sysadm (devel/refpolicy/policy/modules/roles/sysadm.te:2/15):
+		    Wrong number of arguments: ntp_stub(domain : {any}) (devel/refpolicy/policy/modules/roles/sysadm.te:223/9)
+				defined at ntp_stub (devel/refpolicy/policy/modules/services/ntp.if:13/12)
+	-->
+	<warning type="Wrong_number_of_arguments">
+		<marker file="devel/refpolicy/policy/modules/roles/sysadm.te" name="ntp_stub" line="223" start_char="9"/>
+		<missing_param>domain</missing_param>
+		<defined_at>
+			<marker file="devel/refpolicy/policy/modules/services/ntp.if" name="ntp_stub" line="13" start_char="12"/>
+		</defined_at>
+	</warning>
+	
+	<!--BUG: Parser does not generate this errro-->
+	<warning type="Undocumented_parameters">
+		<missing_param>domain</missing_param>
+		<marker file="devel/refpolicy/policy/modules/services/amavis.te" name="amavis_domtrans" line="11" start_char="12"/>
+	</warning>
+	
+	<!--
+	In implementation of system/iscsid (devel/refpolicy/policy/modules/system/iscsi.te:2/15):
+		File base name iscsi doesn't match module name: iscsid (devel/refpolicy/policy/modules/system/iscsi.te:2/15)
+	-->
+	<warning type="moldule_name_does_not_match_file_name">
+		<marker file="devel/refpolicy/policy/modules/system/iscsi.te" name="iscsi" line="2" start_char="15"/>
+	</warning>
+	
+</shrimp>
+
+
+<!-- End of document -->

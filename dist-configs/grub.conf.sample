@@ -1,0 +1,4 @@
+title Separation Kernel Platform
+  root (hd0,0)
+  kernel /vmlinuz-deadline console=tty0 rdinit=/init root=/dev/ram0
+  initrd /initramfs-buildroot.gz

@@ -1,0 +1,17 @@
+Name:                scd-xml
+Version:             0.1
+Description:         scd-xml
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Magnus Carlsson, Joe Hurd, Sigbjorn Finne, Joel Stanley, Brett Letner
+Maintainer:          magnus@galois.com, joe@galois.com, sof@galois.com, bletner@contractor.galois.com
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+
+Executable   scd-xml {
+extensions: CPP
+Main-is:             XML.hs
+ghc-options:         -idist/build
+Build-Depends:       scd,base >= 2.1.1,pretty >= 1.0.1.0,regex-posix >= 0.72.0.3
+                     ,xml >= 1.3.4
+}

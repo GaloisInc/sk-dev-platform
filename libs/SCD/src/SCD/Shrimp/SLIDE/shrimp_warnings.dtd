@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT file_base_name EMPTY>
+<!ATTLIST file_base_name
+        name CDATA #REQUIRED
+>
+
+<!ELEMENT module_name EMPTY>
+<!ATTLIST module_name
+        name CDATA #REQUIRED
+>
+
+<!ELEMENT kind EMPTY>
+<!ATTLIST kind
+        name CDATA #REQUIRED
+>
+
+<!ELEMENT param_info (kind+)>
+<!ATTLIST param_info
+        name     CDATA #IMPLIED
+        optional CDATA #REQUIRED
+>
+
+<!ELEMENT illegal_parameter (kind+)>
+<!ATTLIST illegal_parameter
+          index CDATA #REQUIRED>
+
+<!ELEMENT expected_kind (kind+)>
+<!ELEMENT got_kinds (kind+)>
+
+<!ELEMENT got_complex_param (complex_param_comp+)>
+
+<!ELEMENT complex_param_comp (marker)>
+<!ATTLIST complex_param_comp
+        value CDATA #REQUIRED
+>
+
+<!ELEMENT fragment_text EMPTY>
+<!ATTLIST fragment_text
+        value CDATA #REQUIRED
+>
+
+<!ELEMENT warning_text (#PCDATA)>
+
+<!ELEMENT marker (kind*|param_info*)>
+
+<!ATTLIST marker
+	file         CDATA #REQUIRED
+	name         CDATA #REQUIRED
+	line         CDATA #REQUIRED
+	col          CDATA #REQUIRED
+        start_offset CDATA #REQUIRED
+        end_offset   CDATA #REQUIRED
+>
+
+<!ELEMENT defined_at (marker+)> <!-- NB: we can have multiple declaring sites -->
+
+<!-- Start warning types -->
+
+<!ELEMENT duplicate_access_vector_def (marker,defined_at)>
+<!ELEMENT duplicate_class_permission  (marker)>
+<!ELEMENT duplicate_common_def        (marker,defined_at)>
+<!ELEMENT duplicate_common_permission (marker)>
+<!ELEMENT duplicate_definitions       (marker+)>
+<!ELEMENT duplicate_identifier        (marker,defined_at)>
+<!ELEMENT duplicate_macro_def         (marker,defined_at)>
+<!ELEMENT duplicate_occurrences       (marker)>
+<!ELEMENT duplicate_symbol_decl       (marker,defined_at)>
+<!ELEMENT fragment_kind_error         (expected_kind,got_complex_params)>
+<!ELEMENT illegal_fragment            (fragment_text,defined_at)>
+<!ELEMENT illegal_macro_use           (marker,defined_at)> 
+<!ELEMENT illegal_parameter_use       (illegal_parameter+)>
+<!ELEMENT illegal_symbol_decls        (marker+)>
+<!ELEMENT illegal_symbol_ref          (marker,defined_at)>
+<!ELEMENT inconsistent_macro_defs     (marker+)>
+<!ELEMENT inconsistent_symbol_defs    (marker+)>
+
+<!ELEMENT in_definition               (marker,warnings)>
+<!ATTLIST in_definition
+        macro_name CDATA #REQUIRED
+>
+
+<!ELEMENT in_implementation           (marker,warnings)>
+<!ATTLIST in_implementation
+        layer  CDATA #REQUIRED
+        module CDATA #REQUIRED
+>
+
+<!ELEMENT missing_access_vector_def   (marker)>
+<!ELEMENT missing_module_config       (marker)>
+<!ELEMENT module_id_mismatch          (file_base_name, module_name)>
+<!ELEMENT mutually_recursive          (marker+)>
+<!ELEMENT ref_policy_warn_call        (marker, warning_text+)>
+<!ELEMENT kind_mismatch               (marker,expected_kind,got_kinds)>
+<!ELEMENT undefined_macro             (marker)>
+<!ELEMENT undefined_common_id         (marker)>
+<!ELEMENT undefined_identifier        (marker)>
+<!ELEMENT undefined_identifiers       (marker+)>
+<!ELEMENT undocumented_parameters     (param_info+)>
+<!ELEMENT unknown_ifdef_id            (marker)>
+<!ELEMENT unknown_module_config_names (marker+)>
+<!ELEMENT unused_parameters           (marker,param_info+)>
+
+<!ELEMENT when_tunable_true           (warnings)>
+<!ATTLIST when_tunable_true 
+        expr CDATA #REQUIRED>
+
+<!ELEMENT when_tunable_false          (warnings)>
+<!ATTLIST when_tunable_false          
+        expr CDATA #REQUIRED>
+
+<!ELEMENT wrong_number_of_arguments   (marker,defined_at)>
+
+<!-- End warning types -->
+
+<!ELEMENT warnings
+  ( duplicate_access_vector_def |
+    duplicate_class_permission  |
+    duplicate_common_def        |
+    duplicate_common_permission |
+    duplicate_definitions       |
+    duplicate_identifier        |
+    duplicate_macro_def         |
+    duplicate_occurrences       |
+    duplicate_symbol_decl       |
+    fragment_kind_error         |
+    illegal_fragment            |
+    illegal_macro_use           |
+    illegal_parameter_use       |
+    illegal_symbol_decls        |
+    illegal_symbol_ref          |
+    inconsistent_macro_defs     |
+    inconsistent_symbol_defs    |
+    in_definition               |
+    in_implementation           |
+    missing_access_vector_def   |
+    missing_module_config       |
+    module_id_mismatch          |
+    mutually_recursive          |
+    ref_policy_warn_call        |
+    kind_mismatch               |
+    undefined_macro             |
+    undefined_common_id         |
+    undefined_identifier        |
+    undefined_identifiers       |
+    undocumented_parameters     |
+    unknown_ifdef_id            |
+    unknown_module_config_names |
+    unused_parameters           |
+    wrong_number_of_arguments   |
+    when_tunable_true           |
+    when_tunable_false
+  )*
+>
+
+<!ELEMENT shrimp (warnings)>

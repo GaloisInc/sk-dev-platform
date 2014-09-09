@@ -1,0 +1,2 @@
+/etc/a/.*       gen_context(system_u:object_r:a_file_t,s0)
+/etc/another    gen_context(system_u:object_r:a_another_file_t,s0)

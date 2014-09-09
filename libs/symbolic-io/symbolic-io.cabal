@@ -1,0 +1,19 @@
+Name:    symbolic-io
+Version: 0.1
+Cabal-version: >= 1.2
+Build-type: Simple
+Author:  Magnus Carlsson, Peter White
+Synopsis: Support for collecting symbolic trace of IO operations.
+Description: 
+
+
+Library
+  Build-depends: base, mtl, random
+  Exposed-modules: 
+    Data.Symbolic.IO
+  Other-modules:
+    Data.Symbolic.SIO
+    Data.Symbolic.Env
+    Data.Symbolic.Mode
+  GHC-options: -Wall -Werror
+  HS-source-dirs: src

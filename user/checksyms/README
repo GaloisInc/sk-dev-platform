@@ -1,0 +1,21 @@
+
+This is the 'checksyms' tool, which will check the symbols used by a
+binary against a whitelist with respect to a specific library.
+
+Usage: checksyms.py <library> <whitelist> <program>
+
+  Specify a <whitelist> of symbols defined in <library> which
+  <program> should be able to link against.  Any symbols
+  defined in <library> not in the <whitelist> but used by
+  <program> will generate an error message.
+
+  <whitelist> is a text file with one symbol per line.
+  <library> is a C shared object.
+  <program> is a compiled C program which may or may not
+     link against <library>.
+
+Example:
+
+$ python checksyms.py /lib64/libc.so.6 libc_whitelist ../demo/disk
+# Program '../demo/disk' uses the following disallowed symbols from library '/lib64/libc.so.6':
+open

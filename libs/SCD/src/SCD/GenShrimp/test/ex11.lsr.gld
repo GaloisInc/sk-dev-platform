@@ -1,0 +1,24 @@
+INPUT: ex11.lsr
+class Process() {
+  port active : { position = subject };
+}
+
+class Foo() {
+  port p : { position = object };
+  port q : { position = object };
+}
+
+domain foo = Foo();
+domain proc = Process();
+
+proc.active -- foo.p;
+proc.active -- foo.q;
+OUTPUT: ex11.lsr
+module.te: ex11.lsr
+policy_module(module,1.0)
+type proc_t;
+type foo_t;
+allow proc_t foo_t:foo p;
+allow proc_t foo_t:foo q;
+module.fc: ex11.lsr
+

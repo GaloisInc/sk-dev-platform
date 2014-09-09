@@ -1,0 +1,49 @@
+sl2cs - Simple Lobster To Core Shrimp
+---------------------------------------
+
+sl2cs Is intended to generate SELinux M4/Shrimp output from Lobster
+input modules. It is designed to work via program transformation:
+
+   lobster -> simple lobster -> core lobster -> core shrimp
+
+A bit more detail on each stage:
+
+ * lobster -> simple lobster
+
+   Simple lobster is an AST that should parse all *current* lobster
+   programs.  It doesn't provide for any future growth.  E.g, instead
+   of supporting 
+
+      position = Expr
+
+   it supports 
+
+     position = Identifier | subject | object.
+
+   It is expected that as lobster and simple lobster evolve they will
+   become very close (the same?).
+
+   This stage has not been implemented yet (should be very
+   straightforward).
+
+ * simple lobster -> core lobster
+
+   Core lobster desugars simple lobster and discards constructs not
+   needed for code generation.  It is syntactically close to lobster,
+   but not equivalent.
+
+   It is expected that the input lobster is legal when this module is
+   called, e.g. the policy module has already undergone port type
+   checking.
+
+   See file FromSimpleLob.hs for the current limitations on this stage.
+
+ * core lobster -> core shrimp
+
+   Core shrimp is simply SELinux M4/Shrimp code generation.  I called
+   it "core" because I'm pretty sure I won't need all of shrimp.
+
+   Right now the stage generates legal M4, but it doesn't use the API
+   expected by SELinux M4/Shrimp.
+
+   See file FromCoreLob.hs for the current limitations on this stage.

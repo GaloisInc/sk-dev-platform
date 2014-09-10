@@ -22,8 +22,6 @@ git clone $REPO_URL $DIST_DIR
 
 pushd $DIST_DIR
 bash setup.sh
-git submodule init
-git submodule update
 
 rm $DIST_DIR/src-dist.sh
 rm $DIST_DIR/os/build/*.gz

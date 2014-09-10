@@ -25,13 +25,10 @@ bash setup.sh
 git submodule init
 git submodule update
 
+rm $DIST_DIR/src-dist.sh
 rm $DIST_DIR/os/build/*.gz
 rm $DIST_DIR/os/build/*.bz2
-rm $DIST_DIR/src-dist.sh
-rm $DIST_DIR/docs/RELEASES
 rm $DIST_DIR/os/README
-rm -f $DIST_DIR/os/build/buildroot-2014.08/dl.tar
-rm -rf $DIST_DIR/libs
 rm -rf $DIST_DIR/.git
 rm $DIST_DIR/.gitmodules
 find $DIST_DIR -name .gitignore | xargs rm

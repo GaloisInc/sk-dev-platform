@@ -6,8 +6,8 @@ This package contains the source code for the custom components of the
 separation kernel development platform.  This document will cover the contents
 of the package and the steps required to build the programs contained within.
 Although the sources should be buildable, this release is not a complete source
-release since it lacks the Linux kernel source, BuildRoot source, and
-configuration files.
+release; additional required components can be obtained by using the included
+setup script.
 
 Package Contents
 ----------------

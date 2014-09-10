@@ -33,7 +33,6 @@ Package Contents
 
     checksyms: a python tool for checking referenced symbols in a
     program binary against a whitelist of library symbols;
-    ld[unecessary);
 
   user/sklite/
 
